@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/indigo_600">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:layout_margin="8dp"
+            android:textColor="@color/white"/>
+
+
+        <RadioGroup
+            android:id="@+id/order_choices"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/national_num"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="@string/national_number"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:id="@+id/alphabetical"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="@string/alphabetical"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:id="@+id/hp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="@string/hp"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/attack"
+                android:text="@string/attack"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/defense"
+                android:text="@string/defense"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/special_attack"
+                android:text="@string/special_attack"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/special_defense"
+                android:text="@string/special_defense"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/speed"
+                android:text="@string/speed"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/total"
+                android:text="@string/total"
+                android:textColor="@color/white"
+                android:textAllCaps="true"/>
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ascending_descending"
+            android:textAllCaps="true"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/ascending_descending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ascending"
+            android:checked="true"
+            android:textColor="@color/white"
+            android:layout_margin="8dp"
+            android:textAllCaps="true"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_sorting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/apply"
+            android:textColor="@color/white"
+            android:textAllCaps="true"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_map"
+    app:startDestination="@id/dexListFragment">
+
+    <fragment
+        android:id="@+id/dexListFragment"
+        android:name="com.example.pokedex.ui.DexListFragment"
+        android:label="fragment_dex_list"
+        tools:layout="@layout/fragment_dex_list" >
+        <action
+            android:id="@+id/action_dexListFragment_to_pokemonInfoFragment"
+            app:destination="@id/pokemonInfoFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_dexListFragment_to_sortingOptionsDialog"
+            app:destination="@id/sortingOptionsDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonInfoFragment"
+        android:name="com.example.pokedex.ui.PokemonInfoFragment"
+        android:label="fragment_pokemon_info"
+        tools:layout="@layout/fragment_pokemon_info" >
+        <argument android:name="pokemonPlacement" />
+    </fragment>
+    <dialog
+        android:id="@+id/sortingOptionsDialog"
+        android:name="com.example.pokedex.ui.SortingOptionsDialog"
+        android:label="SortingOptionsDialog" >
+        <action
+            android:id="@+id/action_sortingOptionsDialog_to_dexListFragment"
+            app:destination="@id/dexListFragment" />
+    </dialog>
+</navigation>

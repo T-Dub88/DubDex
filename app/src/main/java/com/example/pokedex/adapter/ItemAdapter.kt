@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.R
 import com.example.pokedex.data.Pokemon
+import com.example.pokedex.data.SortingData
 import com.example.pokedex.ui.DexListFragmentDirections
 import okhttp3.internal.format
+import java.lang.Exception
 
 
 class ItemAdapter(
     private val data: List<Pokemon>,
+    private val sortingInformation: String?
 ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder> () {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -26,6 +29,7 @@ class ItemAdapter(
         val pokemonPic: ImageView = view.findViewById(R.id.pokemon_image)
         val pokemonType1: ImageView = view.findViewById(R.id.type_1)
         val pokemonType2: ImageView = view.findViewById(R.id.type_2)
+        val sortedStat: TextView = view.findViewById(R.id.sorted_stat)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -86,10 +90,27 @@ class ItemAdapter(
             null -> holder.pokemonType2.setImageResource(android.R.color.transparent)
         }
 
+        when (sortingInformation) {
+            "hpStat" -> holder.sortedStat.text = "HP:\n${item.hpStat}"
+            "attackStat" -> holder.sortedStat.text = "Atk:\n${item.attackStat}"
+            "defenseStat" -> holder.sortedStat.text = "Def:\n${item.defenseStat}"
+            "specialAttackStat" -> holder.sortedStat.text = "S. Atk:\n${item.specialAttackStat}"
+            "specialDefenseStat" -> holder.sortedStat.text = "S. Def:\n${item.specialDefenseStat}"
+            "speedStat" -> holder.sortedStat.text = "Speed:\n${item.speedStat}"
+            "totalStats" -> holder.sortedStat.text = "Total:\n${item.totalStats}"
+            else -> holder.sortedStat.text = ""
+        }
 
         holder.pokemonNumber.text = format("#%03d", item.nationalNum)
         holder.pokemonName.text = item.pokemonName
-        holder.pokemonPic.load(imageUrl)
+
+        holder.pokemonPic.load(imageUrl) {
+            placeholder(R.drawable.pokeball)
+            crossfade(true)
+            crossfade(700)
+            build()
+            error(R.drawable.pokeball)
+        }
 
         holder.itemView.setOnClickListener {
             Log.i("clicked", "clicked")

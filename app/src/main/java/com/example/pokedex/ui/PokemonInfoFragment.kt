@@ -39,15 +39,6 @@ class PokemonInfoFragment : Fragment() {
         arguments?.let {
             pokemonPlacement = it.getString(POKEMONPLACEMENT).toString()
         }
-
-        // Used to add actions when back button is pressed.
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-
-                findNavController().popBackStack()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     @SuppressLint("SetTextI18n")
@@ -64,7 +55,13 @@ class PokemonInfoFragment : Fragment() {
 
         binding.pokemonImage.load(
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon.nationalNum}.png"
-        )
+        ) {
+            placeholder(R.drawable.pokeball)
+            crossfade(true)
+            crossfade(700)
+            build()
+            error(R.drawable.pokeball)
+        }
 
         // Header card bindings.
         binding.pokemonName.text = currentPokemon.pokemonName

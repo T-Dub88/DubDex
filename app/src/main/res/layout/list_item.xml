@@ -63,6 +63,19 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="8dp"/>
 
+            <TextView
+                android:id="@+id/sorted_stat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/type_2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@id/divider"
+                android:layout_margin="8dp"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toStartOf="@id/pokemon_image"
+                android:gravity="center"/>
 
             <ImageView
                 android:id="@+id/pokemon_image"

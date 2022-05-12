@@ -53,7 +53,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
 
         sharedViewModel.pokemonEntities.observe(viewLifecycleOwner) {
-            recyclerView.adapter = ItemAdapter(it)
+            recyclerView.adapter = ItemAdapter(it, sharedViewModel.sortingData.value?.sortBy)
         }
 
         findNavController().addOnDestinationChangedListener (navListener)

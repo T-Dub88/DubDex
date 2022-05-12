@@ -29,11 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Fix the way the type images are selected.
 
-    // TODO: Handle images loading better/differently. Store them if possible.
-
     // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
-
-    // TODO: Add indicator for sorted stat on the recycler view.
 
     // TODO: Add evolution chains.
 

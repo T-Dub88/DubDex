@@ -11,20 +11,20 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pokemon: Pokemon)
 
-    @Query("SELECT * FROM national ORDER BY nationalNum ASC")
-    fun getAllByNumsAscending(): LiveData<List<Pokemon>>
+//    @Query("SELECT * FROM national ORDER BY nationalNum ASC")
+//    fun getAllByNumsAscending(): LiveData<List<Pokemon>>
 
     @Query("DELETE FROM national")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM national WHERE nationalNum = :nationalNum")
-    suspend fun getPokemon(nationalNum: String): Pokemon
+//    @Query("SELECT * FROM national WHERE nationalNum = :nationalNum")
+//    suspend fun getPokemon(nationalNum: String): Pokemon
 
-    @Query("SELECT * FROM National WHERE name = :search OR nationalNum = :search ")
-    fun filterDexList(search: String): LiveData<List<Pokemon>>
+//    @Query("SELECT * FROM National WHERE name = :search OR nationalNum = :search ")
+//    fun filterDexList(search: String): LiveData<List<Pokemon>>
 
-    @Query("SELECT * FROM NATIONAL ORDER BY name ASC")
-    fun getAllByNamesAscending(): LiveData<List<Pokemon>>
+//    @Query("SELECT * FROM NATIONAL ORDER BY name ASC")
+//    fun getAllByNamesAscending(): LiveData<List<Pokemon>>
 
     // Sorting queries for user inputs.
     @Query(

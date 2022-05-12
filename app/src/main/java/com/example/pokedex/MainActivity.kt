@@ -1,9 +1,11 @@
 package com.example.pokedex
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.pokedex.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -22,4 +24,27 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
     }
+
+    // TODO: Remove hardcoded strings.
+
+    // TODO: Fix the way the type images are selected.
+
+    // TODO: Handle images loading better/differently. Store them if possible.
+
+    // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
+
+    // TODO: Add indicator for sorted stat on the recycler view.
+
+    // TODO: Add evolution chains.
+
+    // TODO: Add alternate forms of pokemon.
+
+    // TODO: Add pokemon cries maybe?
+
+    // TODO: Maybe add moves?
+
+    // TODO: Rework database download to only load on first startup.
+
+    // TODO: Two pane layout for tablets.
+
 }

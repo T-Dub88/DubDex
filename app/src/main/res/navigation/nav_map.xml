@@ -22,6 +22,7 @@
             android:id="@+id/action_dexListFragment_to_sortingOptionsDialog"
             app:destination="@id/sortingOptionsDialog" />
     </fragment>
+
     <fragment
         android:id="@+id/pokemonInfoFragment"
         android:name="com.example.pokedex.ui.PokemonInfoFragment"
@@ -29,6 +30,7 @@
         tools:layout="@layout/fragment_pokemon_info" >
         <argument android:name="pokemonPlacement" />
     </fragment>
+
     <dialog
         android:id="@+id/sortingOptionsDialog"
         android:name="com.example.pokedex.ui.SortingOptionsDialog"
@@ -37,4 +39,5 @@
             android:id="@+id/action_sortingOptionsDialog_to_dexListFragment"
             app:destination="@id/dexListFragment" />
     </dialog>
+
 </navigation>

@@ -15,7 +15,7 @@ import java.text.DecimalFormat
 
 class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
-    private val _sortingData = MutableLiveData(SortingData("", true, "nationalNum"))
+    private val _sortingData = MutableLiveData(SortingData("", true, "nationalNum", ""))
     val sortingData: LiveData<SortingData> = _sortingData
 
     // Needs to take all 3 search parameters into account.

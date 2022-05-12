@@ -3,13 +3,13 @@ package com.example.pokedex.ui
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.PokedexApplication
@@ -18,8 +18,6 @@ import com.example.pokedex.adapter.ItemAdapter
 import com.example.pokedex.databinding.FragmentDexListBinding
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
 class DexListFragment : androidx.fragment.app.Fragment() {
@@ -28,6 +26,12 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         DexViewModelFactory(
             (activity?.application as PokedexApplication).database.pokemonDao()
         )
+    }
+
+    private val navListener = NavController.OnDestinationChangedListener { _, _, _ ->
+        if (sharedViewModel.sortingData.value?.searchText != "") {
+           sharedViewModel.sortingData.value?.temporarySearch = sharedViewModel.sortingData.value?.searchText.toString()
+        }
     }
 
     private lateinit var _binding: FragmentDexListBinding
@@ -46,16 +50,19 @@ class DexListFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
-
 
         sharedViewModel.pokemonEntities.observe(viewLifecycleOwner) {
             recyclerView.adapter = ItemAdapter(it)
-
         }
 
+        findNavController().addOnDestinationChangedListener (navListener)
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        findNavController().removeOnDestinationChangedListener(navListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -67,10 +74,12 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         val hint = "Enter Name or Number"
 
         searchView.queryHint = hint
-        searchView.maxWidth = Int.MAX_VALUE
 
-        if (sharedViewModel.sortingData.value?.searchText != "") {
-            searchView.setQuery(sharedViewModel.sortingData.value?.searchText, false)
+        if (sharedViewModel.sortingData.value?.temporarySearch != "") {
+            searchBar.expandActionView()
+            searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
+            sharedViewModel.searchPokemon(sharedViewModel.sortingData.value?.temporarySearch)
+            sharedViewModel.sortingData.value?.temporarySearch = ""
         }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -85,23 +94,15 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
                 sharedViewModel.searchPokemon(searchInput)
 
-                Log.i("new", sharedViewModel.pokemonEntities.value.toString())
-
-//                for (item in sharedViewModel.pokemonEntities.value!!) {
-//                    if (item.pokemonName.lowercase() == searchText) {
-//                        sharedViewModel.activeList.value.add(item)
-//                    } else if (item.nationalNum.toString() == searchText) {
-//                        sharedViewModel.activeList.value.add(item)
-//                    }
-//                }
-
                 return false
             }
 
         })
 
+
         super.onCreateOptionsMenu(menu, inflater)
     }
+
 
     // Hide keyboard functions
     private fun Fragment.hideKeyboard() {

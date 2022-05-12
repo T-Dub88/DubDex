@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.R
 import com.example.pokedex.data.Pokemon
+import com.example.pokedex.data.SortingData
 import com.example.pokedex.ui.DexListFragmentDirections
 import okhttp3.internal.format
+import java.lang.Exception
 
 
 class ItemAdapter(
@@ -89,7 +91,14 @@ class ItemAdapter(
 
         holder.pokemonNumber.text = format("#%03d", item.nationalNum)
         holder.pokemonName.text = item.pokemonName
-        holder.pokemonPic.load(imageUrl)
+
+        holder.pokemonPic.load(imageUrl) {
+            placeholder(R.drawable.pokeball)
+            crossfade(true)
+            crossfade(700)
+            build()
+            error(R.drawable.pokeball)
+        }
 
         holder.itemView.setOnClickListener {
             Log.i("clicked", "clicked")

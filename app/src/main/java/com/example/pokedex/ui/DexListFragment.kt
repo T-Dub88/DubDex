@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.example.pokedex.adapter.ItemAdapter
 import com.example.pokedex.databinding.FragmentDexListBinding
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
+import kotlinx.coroutines.launch
 
 
 class DexListFragment : androidx.fragment.app.Fragment() {
@@ -123,6 +125,11 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
             R.id.sort -> {
                 findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
+            }
+
+            R.id.evolution_chains -> {
+                Toast.makeText(activity, "Adding Evolutions...", Toast.LENGTH_LONG).show()
+                sharedViewModel.initializeChainCount()
             }
 
 

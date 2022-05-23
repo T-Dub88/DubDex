@@ -1,5 +1,6 @@
 package com.example.pokedex.data
 
+import android.os.Build.VERSION_CODES.S
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
@@ -11,20 +12,19 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pokemon: Pokemon)
 
-//    @Query("SELECT * FROM national ORDER BY nationalNum ASC")
-//    fun getAllByNumsAscending(): LiveData<List<Pokemon>>
+    // Method for updating a row in the database.
+    @Update()
+    suspend fun updatePokemonDatabase(pokemon: Pokemon)
+
+    @Query("SELECT DISTINCT evolutionChain FROM National")
+    suspend fun getChainNumberList(): List<Int>
+
+    // Query for finding a previous evolution form.
+    @Query("SELECT * FROM National WHERE instr(name, :name) > 0")
+    suspend fun findEntity(name: String): Pokemon
 
     @Query("DELETE FROM national")
     suspend fun deleteAll()
-
-//    @Query("SELECT * FROM national WHERE nationalNum = :nationalNum")
-//    suspend fun getPokemon(nationalNum: String): Pokemon
-
-//    @Query("SELECT * FROM National WHERE name = :search OR nationalNum = :search ")
-//    fun filterDexList(search: String): LiveData<List<Pokemon>>
-
-//    @Query("SELECT * FROM NATIONAL ORDER BY name ASC")
-//    fun getAllByNamesAscending(): LiveData<List<Pokemon>>
 
     // Sorting queries for user inputs.
     @Query(

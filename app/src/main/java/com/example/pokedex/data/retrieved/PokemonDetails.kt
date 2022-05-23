@@ -4,6 +4,12 @@ package com.example.pokedex.data.retrieved
 import com.squareup.moshi.Json
 
 data class PokemonDetails(
+    @Json(name = "evolution_chain")
+    val evolutionChain: EvolutionChainNumber,
+
+    @Json(name = "evolves_from_species")
+    val evolvesFrom: EvolvesFrom?,
+
     @Json(name = "flavor_text_entries")
     val flavorTextEntries: List<FlavorText>,
 
@@ -13,6 +19,14 @@ data class PokemonDetails(
     val genera: List<Genera>
 
 ) {
+    data class EvolutionChainNumber(
+        val url: String
+    )
+
+    data class EvolvesFrom(
+        val name: String?
+    )
+
     data class PokedexNumber(
         @Json(name = "entry_number")
         val entryNumber: Int,

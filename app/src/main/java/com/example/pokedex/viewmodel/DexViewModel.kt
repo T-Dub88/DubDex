@@ -1,16 +1,16 @@
 package com.example.pokedex.viewmodel
 
-import android.os.Parcelable
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.pokedex.data.Pokemon
 import com.example.pokedex.data.PokemonDao
 import com.example.pokedex.data.SortingData
-import com.example.pokedex.data.retrieved.PokemonDetails
-import com.example.pokedex.data.retrieved.PokemonStats
+import com.example.pokedex.data.retrieved.*
 import com.example.pokedex.network.DexApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.lang.IndexOutOfBoundsException
 import java.text.DecimalFormat
 
 class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
@@ -18,7 +18,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     private val _sortingData = MutableLiveData(SortingData("", true, "nationalNum", ""))
     val sortingData: LiveData<SortingData> = _sortingData
 
-    // Needs to take all 3 search parameters into account.
+    // Sets the proper list of pokemon based on the sorting data values.
     val pokemonEntities: LiveData<List<Pokemon>> = _sortingData.switchMap {
 
         if (_sortingData.value?.sortBy == "nationalNum" &&
@@ -120,6 +120,25 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         }
     }
 
+    fun initializeChainCount() {
+        viewModelScope.launch {
+            getChainCount()
+        }
+    }
+
+    private suspend fun getChainCount() {
+        val chainList = viewModelScope.async {
+            pokemonDao.getChainNumberList()
+        }
+
+        for (i in chainList.await()) {
+            val chainData = viewModelScope.async { DexApi.retrofitService.getChainData(i) }
+            viewModelScope.launch { getEvolutionData(chainData.await().chain) }
+
+        }
+
+    }
+
     // Retrieves a list of pokemon in the national dex.
     private suspend fun getPokemonEntries() {
         val pokemonList = viewModelScope.async {
@@ -131,7 +150,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
                 Log.i("national_list", pokemon.toString())
                 gatherData(pokemon.entryNumber.toString())
             }
-
         }
     }
 
@@ -154,6 +172,12 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         val specialAttackStat: Int = getStat(stats.await(), "special-attack")
         val specialDefenseStat: Int = getStat(stats.await(), "special-defense")
         val speedStat: Int = getStat(stats.await(), "speed")
+        val evolvesFrom: String? = details.await().evolvesFrom?.name
+
+        // Todo: Write functions to link and retrieve this information:
+        val evolutionDetails: String? = null
+        val evolutionTrigger: String? = null
+        val evolutionChain: Int = setEvolutionChainNumber(details.await().evolutionChain.url)
 
         // Pass the retrieved parameters to the entity constructor.
         addNewPokemon(
@@ -174,35 +198,12 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             defenseStat,
             specialAttackStat,
             specialDefenseStat,
-            speedStat
+            speedStat,
+            evolvesFrom,
+            evolutionDetails,
+            evolutionTrigger,
+            evolutionChain
         )
-
-//        try {
-//            addNewPokemon(
-//                details.await().pokedexNumbers[0].entryNumber,
-//                stats.await().name,
-//                stats.await().types[0].type.name,
-//                stats.await().types[1].type.name,
-//                details.await().flavorTextEntries[languageDescription].flavorText,
-//                details.await().pokedexNumbers[0].entryNumber,
-//                height,
-//                weight,
-//                details.await().genera[languageGenus].genus
-//            )
-//        } catch (e: IndexOutOfBoundsException) {
-//            addNewPokemon(
-//                details.await().pokedexNumbers[0].entryNumber,
-//                stats.await().name,
-//                stats.await().types[0].type.name,
-//                "blank",
-//                details.await().flavorTextEntries[languageDescription].flavorText,
-//                details.await().pokedexNumbers[0].entryNumber,
-//                height,
-//                weight,
-//                details.await().genera[languageGenus].genus
-//            )
-//        }
-
         Log.i("complete", number)
     }
 
@@ -235,7 +236,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         defenseStat: Int,
         specialAttackStat: Int,
         specialDefenseStat: Int,
-        speedStat: Int
+        speedStat: Int,
+        evolvesFrom: String?,
+        evolutionDetails: String?,
+        evolutionTrigger: String?,
+        evolutionChain: Int?
     ) {
         val newPokemon = getNewPokemonEntry(
             id,
@@ -255,7 +260,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             defenseStat,
             specialAttackStat,
             specialDefenseStat,
-            speedStat
+            speedStat,
+            evolvesFrom,
+            evolutionDetails,
+            evolutionTrigger,
+            evolutionChain
         )
         insertPokemon(newPokemon)
     }
@@ -279,7 +288,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         defenseStat: Int,
         specialAttackStat: Int,
         specialDefenseStat: Int,
-        speedStat: Int
+        speedStat: Int,
+        evolvesFrom: String?,
+        evolutionDetails: String?,
+        evolutionTrigger: String?,
+        evolutionChain: Int?
     ): Pokemon {
         return Pokemon(
             id = id,
@@ -300,7 +313,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             specialAttackStat = specialAttackStat,
             specialDefenseStat = specialDefenseStat,
             speedStat = speedStat,
-            totalStats = speedStat + specialDefenseStat + specialAttackStat + defenseStat + attackStat + hpStat
+            totalStats = speedStat + specialDefenseStat + specialAttackStat + defenseStat + attackStat + hpStat,
+            evolvesFrom = evolvesFrom,
+            evolutionDetails = evolutionDetails,
+            evolutionTrigger = evolutionTrigger,
+            evolutionChain = evolutionChain
         )
     }
 
@@ -348,22 +365,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
                 stats.abilities[i].slot == slot -> return stats.abilities[i].ability.name
                 else -> i += 1
             }
-//            if (i > stats.abilities.size - 1) {
-//                return null
-//            } else if (stats.abilities[i].slot == slot) {
-//                return stats.abilities[i].ability.name
-//            } else {
-//                i += 1
-//            }
-//            try {
-//                if (stats.abilities[i].slot == slot) {
-//                    return stats.abilities[i].ability.name
-//                } else {
-//                    i += 1
-//                }
-//            } catch (e: IndexOutOfBoundsException) {
-//                return null
-//            }
         }
     }
 
@@ -376,15 +377,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
                 stats.types[i].slot == slot -> return stats.types[i].type.name
                 else -> i += 1
             }
-//            try {
-//                if (stats.types[i].slot == slot) {
-//                    return stats.types[i].type.name
-//                } else {
-//                    i += 1
-//                }
-//            } catch (e: IndexOutOfBoundsException) {
-//                return null
-//            }
         }
     }
 
@@ -426,6 +418,123 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     fun setOrder(stat: String) {
         if (stat != _sortingData.value?.sortBy) {
             _sortingData.value = _sortingData.value?.copy(sortBy = stat)
+        }
+    }
+
+    // Sets the evolution chain number for each pokemon in the database.
+    private fun setEvolutionChainNumber(url: String): Int {
+        val uri: Uri = Uri.parse(url)
+        return uri.lastPathSegment?.toInt() ?: 0
+    }
+
+    // Sets the evolution data for each pokemon.
+    private fun getEvolutionData(evolvesTo: EvolvesTo) {
+        for (evolution in evolvesTo.evolvesTo) {
+            getEvolutionData(evolution)
+        }
+
+        var evolutionTrigger: String? = null
+        val species = evolvesTo.species.name
+        var evolutionDetails: String? = null
+
+        try {
+            evolutionTrigger = evolvesTo.evolutionDetails[0].trigger.name
+            evolutionDetails = when {
+                evolvesTo.evolutionDetails[0].gender != null -> {
+                    when (evolvesTo.evolutionDetails[0].gender) {
+                        1 -> "Female"
+                        2 -> "Male"
+                        else -> "Genderless"
+                    }
+                }
+
+                evolvesTo.evolutionDetails[0].heldItem != null -> {
+                    "Held Item: ${evolvesTo.evolutionDetails[0].heldItem?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].item != null -> {
+                    "Item: ${evolvesTo.evolutionDetails[0].item?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].knownMove != null -> {
+                    "Know Move: ${evolvesTo.evolutionDetails[0].knownMove?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].knownMoveType != null -> {
+                    "Know Move Type: ${evolvesTo.evolutionDetails[0].knownMoveType?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].location != null -> {
+                    "Location: ${evolvesTo.evolutionDetails[0].location?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].minAffection != null -> {
+                    "Affection: ${evolvesTo.evolutionDetails[0].minAffection}"
+                }
+
+                evolvesTo.evolutionDetails[0].minBeauty != null -> {
+                    "Beauty: ${evolvesTo.evolutionDetails[0].minBeauty}"
+
+                }
+
+                evolvesTo.evolutionDetails[0].minHappiness != null -> {
+                    "Happiness: ${evolvesTo.evolutionDetails[0].minHappiness}"
+
+                }
+
+                evolvesTo.evolutionDetails[0].minLevel != null -> {
+                    "Level: ${evolvesTo.evolutionDetails[0].minLevel}"
+                }
+
+                evolvesTo.evolutionDetails[0].needsOverworldRain != false -> {
+                    "While raining"
+                }
+
+                evolvesTo.evolutionDetails[0].partySpecies != null -> {
+                    "In Party: ${evolvesTo.evolutionDetails[0].partySpecies?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].partyType != null -> {
+                    "Party Type: ${evolvesTo.evolutionDetails[0].partyType?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].relativePhysicalStats != null -> {
+                    when (evolvesTo.evolutionDetails[0].relativePhysicalStats) {
+                        1 -> "Attack > Defense"
+                        0 -> "Attack == Defense"
+                        else -> "Attack < Defense"
+                    }
+                }
+
+                evolvesTo.evolutionDetails[0].timeOfDay != "" -> {
+                    "Time: ${evolvesTo.evolutionDetails[0].timeOfDay}"
+                }
+
+                evolvesTo.evolutionDetails[0].tradeSpecies != null -> {
+                    "Trade: ${evolvesTo.evolutionDetails[0].tradeSpecies?.name}"
+                }
+
+                evolvesTo.evolutionDetails[0].turnUpsideDown != false -> {
+                    "Turn Upside-Down"
+                }
+
+                else -> {
+                    null
+                }
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            Log.i("noevo", "${evolvesTo.species.name} is a basic")
+        }
+
+
+
+        viewModelScope.launch {
+            val currentEntity = viewModelScope.async { pokemonDao.findEntity(species) }
+            val newEntity = currentEntity.await().copy(
+                evolutionDetails = evolutionDetails,
+                evolutionTrigger = evolutionTrigger
+            )
+            pokemonDao.updatePokemonDatabase(newEntity)
         }
     }
 }

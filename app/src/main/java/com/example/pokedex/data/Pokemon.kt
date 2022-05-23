@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "National")
 data class Pokemon(
-    @PrimaryKey()
+    @PrimaryKey
     val id: Int,
 
     @ColumnInfo(name = "name")
@@ -51,5 +51,17 @@ data class Pokemon(
 
     val speedStat: Int,
 
-    val totalStats: Int
+    val totalStats: Int,
+
+    @Nullable
+    val evolvesFrom: String?,
+
+    @Nullable
+    val evolutionDetails: String?,
+
+    @Nullable
+    val evolutionTrigger: String?,
+
+    val evolutionChain: Int?
+
 )

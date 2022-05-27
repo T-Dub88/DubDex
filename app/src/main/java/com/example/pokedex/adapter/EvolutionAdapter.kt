@@ -12,16 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.R
 import com.example.pokedex.data.Pokemon
-import com.example.pokedex.data.SortingData
 import com.example.pokedex.ui.DexListFragmentDirections
+import com.example.pokedex.ui.PokemonInfoFragmentDirections
 import okhttp3.internal.format
-import java.lang.Exception
+import org.w3c.dom.Text
 
+// TODO: Set the width of each card to be about half the parent card.
 
-class ItemAdapter(
+class EvolutionAdapter(
     private val data: List<Pokemon>,
-    private val sortingInformation: String?
-) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder> () {
+) : RecyclerView.Adapter<EvolutionAdapter.ItemViewHolder> () {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val pokemonName: TextView = view.findViewById(R.id.pokemon_name)
@@ -29,12 +29,14 @@ class ItemAdapter(
         val pokemonPic: ImageView = view.findViewById(R.id.pokemon_image)
         val pokemonType1: ImageView = view.findViewById(R.id.type_1)
         val pokemonType2: ImageView = view.findViewById(R.id.type_2)
-        val sortedStat: TextView = view.findViewById(R.id.sorted_stat)
+        val evolutionDetail: TextView = view.findViewById(R.id.evolution_detail)
+        val evolutionTrigger: TextView = view.findViewById(R.id.evolution_trigger)
+        val evolvesFrom: TextView = view.findViewById(R.id.evolves_from)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val adapterLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item, parent, false)
+            .inflate(R.layout.evolution_item, parent, false)
 
         return ItemViewHolder((adapterLayout))
     }
@@ -90,33 +92,30 @@ class ItemAdapter(
             null -> holder.pokemonType2.setImageResource(android.R.color.transparent)
         }
 
-        when (sortingInformation) {
-            "hpStat" -> holder.sortedStat.text = "HP:\n${item.hpStat}"
-            "attackStat" -> holder.sortedStat.text = "Atk:\n${item.attackStat}"
-            "defenseStat" -> holder.sortedStat.text = "Def:\n${item.defenseStat}"
-            "specialAttackStat" -> holder.sortedStat.text = "S. Atk:\n${item.specialAttackStat}"
-            "specialDefenseStat" -> holder.sortedStat.text = "S. Def:\n${item.specialDefenseStat}"
-            "speedStat" -> holder.sortedStat.text = "Speed:\n${item.speedStat}"
-            "totalStats" -> holder.sortedStat.text = "Total:\n${item.totalStats}"
-            else -> holder.sortedStat.text = ""
-        }
-
         holder.pokemonNumber.text = format("#%03d", item.nationalNum)
         holder.pokemonName.text = item.pokemonName
+        holder.evolvesFrom.text = if (item.evolvesFrom != null) {
+            "Evolves From:\n${item.evolvesFrom}"
+        } else if (item.isBaby) {
+            "Baby Pokemon"
+        } else {
+            "Basic Pokemon"
+        }
+
+        holder.evolutionDetail.text = item.evolutionDetails
+        holder.evolutionTrigger.text = item.evolutionTrigger
 
         holder.pokemonPic.load(imageUrl) {
             placeholder(R.drawable.pokeball)
-            crossfade(true)
             crossfade(700)
-            build()
             error(R.drawable.pokeball)
         }
 
         holder.itemView.setOnClickListener {
-            Log.i("clicked", "clicked")
-            val action = DexListFragmentDirections
-                .actionDexListFragmentToPokemonInfoFragment(
-                    pokemonPlacement = position.toString()
+            val action = PokemonInfoFragmentDirections
+                .actionPokemonInfoFragmentSelf(
+                    pokemonPlacement = item.nationalNum.toString(),
+                    evolutionNav = true
                 )
             holder.view.findNavController().navigate(action)
         }
@@ -124,5 +123,6 @@ class ItemAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
 
 }

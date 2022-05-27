@@ -30,6 +30,8 @@ data class Pokemon(
 
     val genus: String,
 
+    val isBaby: Boolean,
+
     @Nullable
     val ability1: String?,
 
@@ -62,6 +64,6 @@ data class Pokemon(
     @Nullable
     val evolutionTrigger: String?,
 
-    val evolutionChain: Int?
+    val evolutionChain: Int
 
 )

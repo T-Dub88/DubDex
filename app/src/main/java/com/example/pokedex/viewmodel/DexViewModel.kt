@@ -6,17 +6,30 @@ import androidx.lifecycle.*
 import com.example.pokedex.data.Pokemon
 import com.example.pokedex.data.PokemonDao
 import com.example.pokedex.data.SortingData
-import com.example.pokedex.data.retrieved.*
+import com.example.pokedex.data.retrieved.EvolvesTo
+import com.example.pokedex.data.retrieved.PokemonDetails
+import com.example.pokedex.data.retrieved.PokemonStats
 import com.example.pokedex.network.DexApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.lang.IndexOutOfBoundsException
 import java.text.DecimalFormat
 
 class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
     private val _sortingData = MutableLiveData(SortingData("", true, "nationalNum", ""))
     val sortingData: LiveData<SortingData> = _sortingData
+
+    private val _evolutionChainNum = MutableLiveData(1)
+
+//    private val _staticSetter = MutableLiveData(true)
+
+//    private val staticEntityList: LiveData<List<Pokemon>> = _staticSetter.switchMap {
+//        pokemonDao.getAll()
+//    }
+
+    val evolutionList: LiveData<List<Pokemon>> = _evolutionChainNum.switchMap {
+        pokemonDao.getChainList(_evolutionChainNum.value)
+    }
 
     // Sets the proper list of pokemon based on the sorting data values.
     val pokemonEntities: LiveData<List<Pokemon>> = _sortingData.switchMap {
@@ -173,8 +186,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         val specialDefenseStat: Int = getStat(stats.await(), "special-defense")
         val speedStat: Int = getStat(stats.await(), "speed")
         val evolvesFrom: String? = details.await().evolvesFrom?.name
-
-        // Todo: Write functions to link and retrieve this information:
         val evolutionDetails: String? = null
         val evolutionTrigger: String? = null
         val evolutionChain: Int = setEvolutionChainNumber(details.await().evolutionChain.url)
@@ -190,6 +201,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             height,
             weight,
             details.await().genera[languageGenus].genus,
+            details.await().isBaby,
             ability1,
             ability2,
             hiddenAbility,
@@ -228,6 +240,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         height: Double,
         weight: Double,
         genus: String,
+        isBaby: Boolean,
         ability1: String?,
         ability2: String?,
         hiddenAbility: String?,
@@ -240,7 +253,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         evolvesFrom: String?,
         evolutionDetails: String?,
         evolutionTrigger: String?,
-        evolutionChain: Int?
+        evolutionChain: Int
     ) {
         val newPokemon = getNewPokemonEntry(
             id,
@@ -252,6 +265,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             height,
             weight,
             genus,
+            isBaby,
             ability1,
             ability2,
             hiddenAbility,
@@ -280,6 +294,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         height: Double,
         weight: Double,
         genus: String,
+        isBaby: Boolean,
         ability1: String?,
         ability2: String?,
         hiddenAbility: String?,
@@ -292,7 +307,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         evolvesFrom: String?,
         evolutionDetails: String?,
         evolutionTrigger: String?,
-        evolutionChain: Int?
+        evolutionChain: Int
     ): Pokemon {
         return Pokemon(
             id = id,
@@ -304,6 +319,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             height = height,
             weight = weight,
             genus = genus,
+            isBaby = isBaby,
             ability1 = ability1,
             ability2 = ability2,
             hiddenAbility = hiddenAbility,
@@ -352,8 +368,13 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     }
 
     // Method that returns a specific pokemon from the live data list of pokemon entities.
-    fun getPokemonEntity(id: Int): Pokemon {
-        return pokemonEntities.value!![id]
+    // TODO: make function work when having searched for pokemon.
+    fun getPokemonEntity(id: Int): Pokemon? {
+        return pokemonEntities.value?.find { it.nationalNum == id }
+    }
+
+    fun getEvolutionEntity(id: Int): Pokemon? {
+        return evolutionList.value?.find { it.nationalNum == id }
     }
 
     // Method that returns an ability or null.
@@ -435,98 +456,179 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
         var evolutionTrigger: String? = null
         val species = evolvesTo.species.name
-        var evolutionDetails: String? = null
+        var evolutionDetails = ""
+
+//        for (evolution in evolvesTo.evolutionDetails) {
+//            evolutionTrigger = evolution.trigger.name
+//        }
 
         try {
-            evolutionTrigger = evolvesTo.evolutionDetails[0].trigger.name
-            evolutionDetails = when {
-                evolvesTo.evolutionDetails[0].gender != null -> {
-                    when (evolvesTo.evolutionDetails[0].gender) {
-                        1 -> "Female"
-                        2 -> "Male"
-                        else -> "Genderless"
-                    }
-                }
+            evolutionTrigger = "Trigger:\n${evolvesTo.evolutionDetails[0].trigger.name}"
 
-                evolvesTo.evolutionDetails[0].heldItem != null -> {
-                    "Held Item: ${evolvesTo.evolutionDetails[0].heldItem?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].item != null -> {
-                    "Item: ${evolvesTo.evolutionDetails[0].item?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].knownMove != null -> {
-                    "Know Move: ${evolvesTo.evolutionDetails[0].knownMove?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].knownMoveType != null -> {
-                    "Know Move Type: ${evolvesTo.evolutionDetails[0].knownMoveType?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].location != null -> {
-                    "Location: ${evolvesTo.evolutionDetails[0].location?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].minAffection != null -> {
-                    "Affection: ${evolvesTo.evolutionDetails[0].minAffection}"
-                }
-
-                evolvesTo.evolutionDetails[0].minBeauty != null -> {
-                    "Beauty: ${evolvesTo.evolutionDetails[0].minBeauty}"
-
-                }
-
-                evolvesTo.evolutionDetails[0].minHappiness != null -> {
-                    "Happiness: ${evolvesTo.evolutionDetails[0].minHappiness}"
-
-                }
-
-                evolvesTo.evolutionDetails[0].minLevel != null -> {
-                    "Level: ${evolvesTo.evolutionDetails[0].minLevel}"
-                }
-
-                evolvesTo.evolutionDetails[0].needsOverworldRain != false -> {
-                    "While raining"
-                }
-
-                evolvesTo.evolutionDetails[0].partySpecies != null -> {
-                    "In Party: ${evolvesTo.evolutionDetails[0].partySpecies?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].partyType != null -> {
-                    "Party Type: ${evolvesTo.evolutionDetails[0].partyType?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].relativePhysicalStats != null -> {
-                    when (evolvesTo.evolutionDetails[0].relativePhysicalStats) {
-                        1 -> "Attack > Defense"
-                        0 -> "Attack == Defense"
-                        else -> "Attack < Defense"
-                    }
-                }
-
-                evolvesTo.evolutionDetails[0].timeOfDay != "" -> {
-                    "Time: ${evolvesTo.evolutionDetails[0].timeOfDay}"
-                }
-
-                evolvesTo.evolutionDetails[0].tradeSpecies != null -> {
-                    "Trade: ${evolvesTo.evolutionDetails[0].tradeSpecies?.name}"
-                }
-
-                evolvesTo.evolutionDetails[0].turnUpsideDown != false -> {
-                    "Turn Upside-Down"
-                }
-
-                else -> {
-                    null
+            if (evolvesTo.evolutionDetails[0].gender != null) {
+                evolutionDetails += when (evolvesTo.evolutionDetails[0].gender) {
+                    1 -> "Gender:\nFemale\n"
+                    2 -> "Gender:\nMale\n"
+                    else -> "Gender:\nGenderless\n"
                 }
             }
+
+            if (evolvesTo.evolutionDetails[0].heldItem != null) {
+                evolutionDetails += "Held Item:\n${evolvesTo.evolutionDetails[0].heldItem?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].item != null) {
+                evolutionDetails += "Item:\n${evolvesTo.evolutionDetails[0].item?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].knownMove != null) {
+                evolutionDetails += "Know Move:\n${evolvesTo.evolutionDetails[0].knownMove?.name}\n"
+            }
+
+            if ( evolvesTo.evolutionDetails[0].knownMoveType != null) {
+                evolutionDetails += "Know Move Type:\n${evolvesTo.evolutionDetails[0].knownMoveType?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].location != null) {
+                evolutionDetails += "Location:\n${evolvesTo.evolutionDetails[0].location?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].minAffection != null) {
+                evolutionDetails += "Min. Affection:\n${evolvesTo.evolutionDetails[0].minAffection}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].minBeauty != null) {
+                evolutionDetails += "Min. Beauty:\n${evolvesTo.evolutionDetails[0].minBeauty}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].minHappiness != null) {
+                evolutionDetails += "Min. Happiness:\n${evolvesTo.evolutionDetails[0].minHappiness}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].minLevel != null) {
+                evolutionDetails += "Min. Level:\n${evolvesTo.evolutionDetails[0].minLevel}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].needsOverworldRain != false) {
+                evolutionDetails += "While raining\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].partySpecies != null) {
+                evolutionDetails += "In Party:\n${evolvesTo.evolutionDetails[0].partySpecies?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].partyType != null) {
+                evolutionDetails += "Party Type:\n${evolvesTo.evolutionDetails[0].partyType?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].relativePhysicalStats != null) {
+                evolutionDetails += when (evolvesTo.evolutionDetails[0].relativePhysicalStats) {
+                    1 -> "Attack > Defense\n"
+                    0 -> "Attack == Defense\n"
+                    else -> "Attack < Defense\n"
+                }
+            }
+
+            if (evolvesTo.evolutionDetails[0].timeOfDay != "") {
+                evolutionDetails += "Time:\n${evolvesTo.evolutionDetails[0].timeOfDay}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].tradeSpecies != null) {
+                evolutionDetails += "Trade:\n${evolvesTo.evolutionDetails[0].tradeSpecies?.name}\n"
+            }
+
+            if (evolvesTo.evolutionDetails[0].turnUpsideDown != false) {
+                evolutionDetails += "Turn Upside-Down\n"
+            }
+
+//            evolutionDetails = when {
+//                evolvesTo.evolutionDetails[0].gender != null -> {
+//                    when (evolvesTo.evolutionDetails[0].gender) {
+//                        1 -> "Female"
+//                        2 -> "Male"
+//                        else -> "Genderless"
+//                    }
+//                }
+
+//                evolvesTo.evolutionDetails[0].heldItem != null -> {
+//                    "Held Item: ${evolvesTo.evolutionDetails[0].heldItem?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].item != null -> {
+//                    "Item: ${evolvesTo.evolutionDetails[0].item?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].knownMove != null -> {
+//                    "Know Move: ${evolvesTo.evolutionDetails[0].knownMove?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].knownMoveType != null -> {
+//                    "Know Move Type: ${evolvesTo.evolutionDetails[0].knownMoveType?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].location != null -> {
+//                    "Location: ${evolvesTo.evolutionDetails[0].location?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].minAffection != null -> {
+//                    "Affection: ${evolvesTo.evolutionDetails[0].minAffection}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].minBeauty != null -> {
+//                    "Beauty: ${evolvesTo.evolutionDetails[0].minBeauty}"
+//
+//                }
+
+//                evolvesTo.evolutionDetails[0].minHappiness != null -> {
+//                    "Happiness: ${evolvesTo.evolutionDetails[0].minHappiness}"
+//
+//                }
+
+//                evolvesTo.evolutionDetails[0].minLevel != null -> {
+//                    "Level: ${evolvesTo.evolutionDetails[0].minLevel}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].needsOverworldRain != false -> {
+//                    "While raining"
+//                }
+
+//                evolvesTo.evolutionDetails[0].partySpecies != null -> {
+//                    "In Party: ${evolvesTo.evolutionDetails[0].partySpecies?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].partyType != null -> {
+//                    "Party Type: ${evolvesTo.evolutionDetails[0].partyType?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].relativePhysicalStats != null -> {
+//                    when (evolvesTo.evolutionDetails[0].relativePhysicalStats) {
+//                        1 -> "Attack > Defense"
+//                        0 -> "Attack == Defense"
+//                        else -> "Attack < Defense"
+//                    }
+//                }
+
+//                evolvesTo.evolutionDetails[0].timeOfDay != "" -> {
+//                    "Time: ${evolvesTo.evolutionDetails[0].timeOfDay}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].tradeSpecies != null -> {
+//                    "Trade: ${evolvesTo.evolutionDetails[0].tradeSpecies?.name}"
+//                }
+
+//                evolvesTo.evolutionDetails[0].turnUpsideDown != false -> {
+//                    "Turn Upside-Down"
+//                }
+
+//                else -> {
+//                    null
+//                }
+//            }
         } catch (e: IndexOutOfBoundsException) {
             Log.i("noevo", "${evolvesTo.species.name} is a basic")
         }
 
-
+        evolutionDetails = evolutionDetails.trim()
 
         viewModelScope.launch {
             val currentEntity = viewModelScope.async { pokemonDao.findEntity(species) }
@@ -536,6 +638,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             )
             pokemonDao.updatePokemonDatabase(newEntity)
         }
+    }
+
+    // Retrieves the evolution chain for use in pokemon info fragment.
+    fun getEvolutionChain(chainNum: Int) {
+        _evolutionChainNum.value = chainNum
     }
 }
 

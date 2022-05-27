@@ -9,17 +9,15 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.PokedexApplication
 import com.example.pokedex.R
-import com.example.pokedex.adapter.ItemAdapter
+import com.example.pokedex.adapter.DexAdapter
 import com.example.pokedex.databinding.FragmentDexListBinding
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
-import kotlinx.coroutines.launch
 
 
 class DexListFragment : androidx.fragment.app.Fragment() {
@@ -55,7 +53,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
 
         sharedViewModel.pokemonEntities.observe(viewLifecycleOwner) {
-            recyclerView.adapter = ItemAdapter(it, sharedViewModel.sortingData.value?.sortBy)
+            recyclerView.adapter = DexAdapter(it, sharedViewModel.sortingData.value?.sortBy)
         }
 
         findNavController().addOnDestinationChangedListener (navListener)
@@ -100,7 +98,6 @@ class DexListFragment : androidx.fragment.app.Fragment() {
             }
 
         })
-
 
         super.onCreateOptionsMenu(menu, inflater)
     }

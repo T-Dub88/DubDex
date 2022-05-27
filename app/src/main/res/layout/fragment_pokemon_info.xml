@@ -478,13 +478,163 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/evolution_chain_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/stats_card"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_margin="4dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#9999">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/evolution_chain_header"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toTopOf="@id/evolution_recycler_view"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textAllCaps="true"
+                            android:layout_margin="8dp"
+                            android:textSize="18sp"
+                            android:text="@string/evolution_chain"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/evolution_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layout_constraintTop_toBottomOf="@id/evolution_chain_header"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:spanCount="2"
+                            android:scrollbars="vertical"/>
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/basic_pokemon"-->
+<!--                            android:layout_width="75dp"-->
+<!--                            android:layout_height="75dp"-->
+<!--                            app:layout_constraintStart_toStartOf="parent"-->
+<!--                            android:layout_margin="8dp"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/evolution_chain_header"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/basic_pokemon_name"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintEnd_toEndOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintStart_toStartOf="@id/basic_pokemon"-->
+<!--                            android:layout_margin="4dp"-->
+<!--                            app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/first_evolution_arrow"-->
+<!--                            android:layout_width="30dp"-->
+<!--                            android:layout_height="30dp"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintTop_toTopOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintBottom_toBottomOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_1_pokemon"-->
+<!--                            android:src="@drawable/ic_baseline_arrow_forward_24"/>-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/stage_1_pokemon"-->
+<!--                            android:layout_width="75dp"-->
+<!--                            android:layout_height="75dp"-->
+<!--                            app:layout_constraintStart_toStartOf="@id/evolution_chain_header"-->
+<!--                            app:layout_constraintEnd_toEndOf="@id/evolution_chain_header"-->
+<!--                            android:layout_margin="8dp"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/evolution_chain_header"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_1_name"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintEnd_toEndOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintStart_toStartOf="@id/stage_1_pokemon"-->
+<!--                            android:layout_margin="4dp"-->
+<!--                            app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/second_evolution_arrow"-->
+<!--                            android:layout_width="30dp"-->
+<!--                            android:layout_height="30dp"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintTop_toTopOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintBottom_toBottomOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_2_pokemon"-->
+<!--                            android:src="@drawable/ic_baseline_arrow_forward_24"/>-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/stage_2_pokemon"-->
+<!--                            android:layout_width="75dp"-->
+<!--                            android:layout_height="75dp"-->
+<!--                            app:layout_constraintEnd_toEndOf="parent"-->
+<!--                            android:layout_margin="8dp"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/evolution_chain_header"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_2_name"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/stage_2_pokemon"-->
+<!--                            app:layout_constraintStart_toStartOf="@id/stage_2_pokemon"-->
+<!--                            app:layout_constraintEnd_toEndOf="@id/stage_2_pokemon"-->
+<!--                            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                            android:layout_margin="4dp"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_1_detail"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintBottom_toTopOf="@id/first_evolution_arrow"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_1_pokemon"-->
+<!--                            android:layout_margin="4dp"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_1_trigger"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/first_evolution_arrow"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/basic_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_1_pokemon"-->
+<!--                            android:layout_margin="4dp"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_2_detail"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintBottom_toTopOf="@id/second_evolution_arrow"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_2_pokemon"-->
+<!--                            android:layout_margin="4dp"/>-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/stage_2_trigger"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/second_evolution_arrow"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/stage_1_pokemon"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/stage_2_pokemon"-->
+<!--                            android:layout_margin="4dp"/>-->
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </layout>

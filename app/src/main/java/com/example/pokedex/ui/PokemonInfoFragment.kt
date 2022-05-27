@@ -5,18 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.PokedexApplication
 import com.example.pokedex.R
+import com.example.pokedex.adapter.EvolutionAdapter
 import com.example.pokedex.databinding.FragmentPokemonInfoBinding
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
 import okhttp3.internal.format
+import kotlin.properties.Delegates
 
 class PokemonInfoFragment : Fragment() {
 
@@ -30,14 +30,17 @@ class PokemonInfoFragment : Fragment() {
 
     companion object {
         const val POKEMONPLACEMENT = "pokemonPlacement"
+        const val EVOLUTIONNAV = "evolutionNav"
     }
 
     private lateinit var pokemonPlacement: String
+    private var evolutionNav by Delegates.notNull<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             pokemonPlacement = it.getString(POKEMONPLACEMENT).toString()
+            evolutionNav = it.getBoolean(EVOLUTIONNAV)
         }
     }
 
@@ -49,17 +52,19 @@ class PokemonInfoFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentPokemonInfoBinding.inflate(inflater, container, false)
 
-        val currentPokemon = sharedViewModel.getPokemonEntity(pokemonPlacement.toInt())
+        val currentPokemon = if (evolutionNav) {
+            sharedViewModel.getEvolutionEntity(pokemonPlacement.toInt())!!
+        } else {
+            sharedViewModel.getPokemonEntity(pokemonPlacement.toInt())!!
+        }
 
-
+        sharedViewModel.getEvolutionChain(currentPokemon.evolutionChain)
 
         binding.pokemonImage.load(
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon.nationalNum}.png"
         ) {
             placeholder(R.drawable.pokeball)
-            crossfade(true)
             crossfade(700)
-            build()
             error(R.drawable.pokeball)
         }
 
@@ -79,14 +84,6 @@ class PokemonInfoFragment : Fragment() {
         binding.hiddenAbility.text = currentPokemon.hiddenAbility
 
         // Base stats bindings.
-//        val totalStats =
-//            currentPokemon.hpStat +
-//                    currentPokemon.attackStat +
-//                    currentPokemon.defenseStat +
-//                    currentPokemon.specialAttackStat +
-//                    currentPokemon.specialDefenseStat +
-//                    currentPokemon.speedStat
-
         binding.hpStat.text = "hp: ${currentPokemon.hpStat}"
         binding.hpPercent.text =
             "${sharedViewModel.getPercent(currentPokemon.hpStat, currentPokemon.totalStats)}%"
@@ -159,16 +156,19 @@ class PokemonInfoFragment : Fragment() {
             null -> binding.type2.setImageResource(android.R.color.transparent)
         }
 
+
+
+
         return binding.root
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                findNavController().navigate(PokemonInfoFragmentDirections.actionPokemonInfoFragmentToDexListFragment())
-//            }
-//        })
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val recyclerView = view.findViewById<RecyclerView>(R.id.evolution_recycler_view)
+
+        sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
+            recyclerView.adapter = EvolutionAdapter(it)
+        }
+    }
 }

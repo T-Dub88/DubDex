@@ -29,6 +29,16 @@
         android:label="fragment_pokemon_info"
         tools:layout="@layout/fragment_pokemon_info" >
         <argument android:name="pokemonPlacement" />
+        <action
+            android:id="@+id/action_pokemonInfoFragment_self"
+            app:destination="@id/pokemonInfoFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <argument
+            android:name="evolutionNav"
+            app:argType="boolean" />
     </fragment>
 
     <dialog

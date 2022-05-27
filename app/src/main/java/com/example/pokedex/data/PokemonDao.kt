@@ -1,10 +1,9 @@
 package com.example.pokedex.data
 
-import android.os.Build.VERSION_CODES.S
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface PokemonDao {
@@ -16,8 +15,13 @@ interface PokemonDao {
     @Update()
     suspend fun updatePokemonDatabase(pokemon: Pokemon)
 
+    // Query for generating the list of distinct evolution chain numbers.
     @Query("SELECT DISTINCT evolutionChain FROM National")
     suspend fun getChainNumberList(): List<Int>
+
+    //Query for getting evolution chain list for a pokemon.
+    @Query("SELECT * FROM National WHERE evolutionChain = :chainNum ORDER BY isBaby DESC")
+    fun getChainList(chainNum: Int?): LiveData<List<Pokemon>>
 
     // Query for finding a previous evolution form.
     @Query("SELECT * FROM National WHERE instr(name, :name) > 0")
@@ -25,6 +29,9 @@ interface PokemonDao {
 
     @Query("DELETE FROM national")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM National")
+    fun getAll(): LiveData<List<Pokemon>>
 
     // Sorting queries for user inputs.
     @Query(

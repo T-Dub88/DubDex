@@ -16,7 +16,10 @@ data class PokemonDetails(
     @Json(name = "pokedex_numbers")
     val pokedexNumbers: List<PokedexNumber>,
 
-    val genera: List<Genera>
+    val genera: List<Genera>,
+
+    @Json(name = "is_baby")
+    val isBaby: Boolean
 
 ) {
     data class EvolutionChainNumber(

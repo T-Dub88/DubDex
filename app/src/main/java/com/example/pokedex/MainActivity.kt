@@ -27,11 +27,11 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Remove hardcoded strings.
 
+    // TODO: Add ability to sort by evolution group. Don't remember what I had in mind here. Maybe baby vs not?
+
     // TODO: Fix the way the type images are selected.
 
     // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
-
-    // TODO: Add evolution chains.
 
     // TODO: Add pokemon cries maybe?
 

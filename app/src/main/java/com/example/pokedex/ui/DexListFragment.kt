@@ -52,8 +52,9 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
 
-        sharedViewModel.pokemonEntities.observe(viewLifecycleOwner) {
-            recyclerView.adapter = DexAdapter(it, sharedViewModel.sortingData.value?.sortBy)
+        sharedViewModel.pokemonEntities.observe(viewLifecycleOwner) { list ->
+            recyclerView.adapter =
+                sharedViewModel.sortingData.value?.sortBy?.let { sortBy -> DexAdapter(list, sortBy) }
         }
 
         findNavController().addOnDestinationChangedListener (navListener)
@@ -71,14 +72,14 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         val searchBar = menu.findItem(R.id.search)
         val searchView = searchBar.actionView as SearchView
 
-        val hint = "Enter Name or Number"
-
-        searchView.queryHint = hint
+        searchView.queryHint = getString(R.string.search_hint)
 
         if (sharedViewModel.sortingData.value?.temporarySearch != "") {
             searchBar.expandActionView()
             searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
-            sharedViewModel.searchPokemon(sharedViewModel.sortingData.value?.temporarySearch)
+            sharedViewModel.sortingData.value?.temporarySearch?.let {
+                sharedViewModel.searchPokemon(it)
+            }
             sharedViewModel.sortingData.value?.temporarySearch = ""
         }
 
@@ -88,11 +89,9 @@ class DexListFragment : androidx.fragment.app.Fragment() {
                 return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
 
-                val searchInput = newText?.lowercase()
-
-                sharedViewModel.searchPokemon(searchInput)
+                sharedViewModel.searchPokemon(newText)
 
                 return false
             }
@@ -116,7 +115,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.download_data -> {
-                Toast.makeText(activity, "Downloading...", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
                 sharedViewModel.startRetrieval()
             }
 
@@ -125,7 +124,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
             }
 
             R.id.evolution_chains -> {
-                Toast.makeText(activity, "Adding Evolutions...", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
                 sharedViewModel.initializeChainCount()
             }
 

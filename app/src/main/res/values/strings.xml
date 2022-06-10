@@ -1,29 +1,76 @@
 <resources>
     <string name="app_name">Pokedex</string>
     <string name="description">description:</string>
-    <string name="pokemon_image">Pokemon Image</string>
+    <string name="pokemon_image">pokemon image</string>
     <string name="abilities">abilities:</string>
     <string name="or">or</string>
-    <string name="hidden">Hidden:</string>
-    <string name="base_stats">Base Stats:</string>
+    <string name="hidden">hidden:</string>
+    <string name="base_stats">base stats:</string>
     <string name="download_data">Download Data</string>
-    <string name="search">Search</string>
-    <string name="filter_by">Filter by…</string>
-    <string name="sort_by">Sort by…</string>
-    <string name="search_hint">Enter Name or Number</string>
-    <string name="order">Ascending/Descending</string>
-    <string name="national_number">National Number</string>
-    <string name="alphabetical">Alphabetical</string>
-    <string name="hp">HP</string>
-    <string name="attack">Attack</string>
-    <string name="defense">Defense</string>
-    <string name="special_attack">Special Attack</string>
-    <string name="special_defense">Special Defense</string>
-    <string name="speed">Speed</string>
-    <string name="ascending_descending">Ascending/Descending</string>
-    <string name="ascending">Ascending</string>
-    <string name="apply">Apply</string>
-    <string name="total">Total</string>
+    <string name="search">search</string>
+    <string name="sort_by">sort by…</string>
+    <string name="order">ascending/descending</string>
+    <string name="national_number">national number</string>
+    <string name="alphabetical">alphabetical</string>
+    <string name="hp">hp</string>
+    <string name="attack">attack</string>
+    <string name="defense">defense</string>
+    <string name="special_attack">special attack</string>
+    <string name="special_defense">special defense</string>
+    <string name="speed">speed</string>
+    <string name="ascending">ascending</string>
+    <string name="apply">apply</string>
+    <string name="total">total</string>
     <string name="evolution_chains">Evolution Chains</string>
-    <string name="evolution_chain">Evolution Chain:</string>
+    <string name="evolution_chain">evolution chain:</string>
+    <string name="search_hint">Enter Name or Number</string>
+    <string name="downloading">Downloading…</string>
+    <string name="adding_evolutions">Adding Evolutions…</string>
+    <string name="empty" />
+
+<!--    Stats string resources-->
+    <string name="hp_stat_sort">hp:\n%d</string>
+    <string name="hp_stat">hp: %d</string>
+    <string name="attack_stat_short">atk:\n%d</string>
+    <string name="attack_stat">attack: %d</string>
+    <string name="defense_stat_short">def:\n%d</string>
+    <string name="defense_stat">defense: %d</string>
+    <string name="special_attack_stat_short">s. atk:\n%d</string>
+    <string name="special_attack_stat">special attack: %d</string>
+    <string name="special_defense_stat_short">s. def:\n%d</string>
+    <string name="special_defense_stat">sp. defense: %d</string>
+    <string name="speed_stat_short">speed:\n%d</string>
+    <string name="speed_stat">speed: %d</string>
+    <string name="total_stats_short">total:\n%d</string>
+    <string name="total_stats">total: %d</string>
+    <string name="stat_percent">%s%%</string>
+    <string name="height">HEIGHT: %s m</string>
+    <string name="weight">WEIGHT: %s kg</string>
+
+<!--    Evolution Data string resouces-->
+    <string name="evolves_from">evolves from:\n%s</string>
+    <string name="baby">baby pokemon\n</string>
+    <string name="no_evolution">no prior evolution</string>
+    <string name="gender_female">gender:\nfemale\n</string>
+    <string name="gender_male">gender:\nmale\n</string>
+    <string name="genderless">gender:\ngenderless\n</string>
+    <string name="held_item">held item:\n%s\n</string>
+    <string name="item">item:\n%s\n</string>
+    <string name="know_move">know move:\n%s\n</string>
+    <string name="know_move_type">know move type:\n%s\n</string>
+    <string name="location">location:\n%s\n</string>
+    <string name="min_affection">min. affection:\n%d\n</string>
+    <string name="min_beauty">min. beauty:\n%d\n</string>
+    <string name="min_happiness">min. happiness:\n%d\n</string>
+    <string name="min_level">min. level:\n%d\n</string>
+    <string name="needs_rain">while raining\n</string>
+    <string name="party_species">in party:\n%s\n</string>
+    <string name="party_type">party type:\n%s\n</string>
+    <string name="attack_greater_defense">attack &gt; defense\n</string>
+    <string name="attack_equal_defense">attack = defense\n</string>
+    <string name="attack_less_defense">attack &lt; defense\n</string>
+    <string name="time">time:\n%s\n</string>
+    <string name="trade">trade:\n%s\n</string>
+    <string name="upside_down">turn upside-down\n</string>
+
 </resources>

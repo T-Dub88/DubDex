@@ -1,7 +1,5 @@
 package com.example.pokedex.adapter
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.R
 import com.example.pokedex.data.Pokemon
-import com.example.pokedex.ui.DexListFragmentDirections
 import com.example.pokedex.ui.PokemonInfoFragmentDirections
 import okhttp3.internal.format
-import org.w3c.dom.Text
-
-// TODO: Set the width of each card to be about half the parent card.
 
 class EvolutionAdapter(
     private val data: List<Pokemon>,
@@ -41,68 +35,115 @@ class EvolutionAdapter(
         return ItemViewHolder((adapterLayout))
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = data[position]
+        val resources = holder.itemView.context.resources
         val imageUrl =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.nationalNum}.png"
 
-        // Need a way to fetch types per item.
-        when (item.type1) {
-            "bug" -> holder.pokemonType1.setImageResource(R.drawable.bug)
-            "dark" -> holder.pokemonType1.setImageResource(R.drawable.dark)
-            "dragon" -> holder.pokemonType1.setImageResource(R.drawable.dragon)
-            "electric" -> holder.pokemonType1.setImageResource(R.drawable.electric)
-            "fairy" -> holder.pokemonType1.setImageResource(R.drawable.fairy)
-            "fighting" -> holder.pokemonType1.setImageResource(R.drawable.fighting)
-            "fire" -> holder.pokemonType1.setImageResource(R.drawable.fire)
-            "flying" -> holder.pokemonType1.setImageResource(R.drawable.flying)
-            "ghost" -> holder.pokemonType1.setImageResource(R.drawable.ghost)
-            "grass" -> holder.pokemonType1.setImageResource(R.drawable.grass)
-            "ground" -> holder.pokemonType1.setImageResource(R.drawable.ground)
-            "ice" -> holder.pokemonType1.setImageResource(R.drawable.ice)
-            "normal" -> holder.pokemonType1.setImageResource(R.drawable.normal)
-            "poison" -> holder.pokemonType1.setImageResource(R.drawable.poison)
-            "rock" -> holder.pokemonType1.setImageResource(R.drawable.rock)
-            "steel" -> holder.pokemonType1.setImageResource(R.drawable.steel)
-            "water" -> holder.pokemonType1.setImageResource(R.drawable.water)
-            "psychic" -> holder.pokemonType1.setImageResource(R.drawable.psychic)
-            null -> holder.pokemonType1.setImageResource(android.R.color.transparent)
+        // Sets the string for all the possible evolution details.
+        var evolutionDetails = resources.getString(R.string.empty)
+        // Checks each detail and adds to the string.
+        if (item.gender != null) {
+            evolutionDetails += when (item.gender) {
+                1 -> resources.getString(R.string.gender_female)
+                2 -> resources.getString(R.string.gender_male)
+                else -> resources.getString(R.string.genderless)
+            }
         }
 
-        when (item.type2) {
-            "bug" -> holder.pokemonType2.setImageResource(R.drawable.bug)
-            "dark" -> holder.pokemonType2.setImageResource(R.drawable.dark)
-            "dragon" -> holder.pokemonType2.setImageResource(R.drawable.dragon)
-            "electric" -> holder.pokemonType2.setImageResource(R.drawable.electric)
-            "fairy" -> holder.pokemonType2.setImageResource(R.drawable.fairy)
-            "fighting" -> holder.pokemonType2.setImageResource(R.drawable.fighting)
-            "fire" -> holder.pokemonType2.setImageResource(R.drawable.fire)
-            "flying" -> holder.pokemonType2.setImageResource(R.drawable.flying)
-            "ghost" -> holder.pokemonType2.setImageResource(R.drawable.ghost)
-            "grass" -> holder.pokemonType2.setImageResource(R.drawable.grass)
-            "ground" -> holder.pokemonType2.setImageResource(R.drawable.ground)
-            "ice" -> holder.pokemonType2.setImageResource(R.drawable.ice)
-            "normal" -> holder.pokemonType2.setImageResource(R.drawable.normal)
-            "poison" -> holder.pokemonType2.setImageResource(R.drawable.poison)
-            "rock" -> holder.pokemonType2.setImageResource(R.drawable.rock)
-            "steel" -> holder.pokemonType2.setImageResource(R.drawable.steel)
-            "water" -> holder.pokemonType2.setImageResource(R.drawable.water)
-            "psychic" -> holder.pokemonType2.setImageResource(R.drawable.psychic)
-            null -> holder.pokemonType2.setImageResource(android.R.color.transparent)
+        if (item.heldItem != null) {
+            evolutionDetails += resources.getString(R.string.held_item, item.heldItem)
         }
 
+        if (item.item != null) {
+            evolutionDetails += resources.getString(R.string.item, item.item)
+        }
+
+        if (item.knowMove != null) {
+            evolutionDetails += resources.getString(R.string.know_move, item.knowMove)
+        }
+
+        if (item.knownMoveType != null) {
+            evolutionDetails += resources.getString(R.string.know_move_type, item.knownMoveType)
+        }
+
+        if (item.location != null) {
+            evolutionDetails += resources.getString(R.string.location, item.location)
+        }
+
+        if (item.minAffection != null) {
+            evolutionDetails += resources.getString(R.string.min_affection, item.minAffection)
+        }
+
+        if (item.minBeauty != null) {
+            evolutionDetails += resources.getString(R.string.min_beauty, item.minBeauty)
+        }
+
+        if (item.minHappiness != null) {
+            evolutionDetails += resources.getString(R.string.min_happiness, item.minHappiness)
+        }
+
+        if (item.minLevel != null) {
+            evolutionDetails += resources.getString(R.string.min_level, item.minLevel)
+        }
+
+        if (item.needsOverworldRain == true) {
+            evolutionDetails += resources.getString(R.string.needs_rain)
+        }
+
+        if (item.partySpecies != null) {
+            evolutionDetails += resources.getString(R.string.party_species, item.partySpecies)
+        }
+
+        if (item.partyType != null) {
+            evolutionDetails += resources.getString(R.string.party_type, item.partyType)
+        }
+
+        if (item.relativePhysicalStats != null) {
+            evolutionDetails += when (item.relativePhysicalStats) {
+                1 -> resources.getString(R.string.attack_greater_defense)
+                0 -> resources.getString(R.string.attack_equal_defense)
+                else -> resources.getString(R.string.attack_less_defense)
+            }
+        }
+
+        if (item.timeOfDay != "") {
+            evolutionDetails += resources.getString(R.string.time, item.timeOfDay)
+        }
+
+        if (item.tradeSpecies != null) {
+            evolutionDetails += resources.getString(R.string.trade, item.tradeSpecies)
+        }
+
+        if (item.turnUpsideDown == true) {
+            evolutionDetails += resources.getString(R.string.upside_down)
+        }
+
+        evolutionDetails = evolutionDetails.trim()
+
+        fun ImageView.setDrawableName(type: String?) {
+            setImageResource(
+                type?.let {
+                    resources.getIdentifier(it, "drawable", context?.packageName)
+                } ?: android.R.color.transparent
+            )
+        }
+
+        holder.pokemonType1.setDrawableName(item.type1)
+        holder.pokemonType2.setDrawableName(item.type2)
         holder.pokemonNumber.text = format("#%03d", item.nationalNum)
         holder.pokemonName.text = item.pokemonName
         holder.evolvesFrom.text = if (item.evolvesFrom != null) {
-            "Evolves From:\n${item.evolvesFrom}"
+            resources.getString(R.string.evolves_from, item.evolvesFrom)
         } else if (item.isBaby) {
-            "Baby Pokemon"
+            resources.getString(R.string.baby) + resources.getString(R.string.no_evolution)
         } else {
-            "Basic Pokemon"
+            resources.getString(R.string.no_evolution)
         }
 
-        holder.evolutionDetail.text = item.evolutionDetails
+//        holder.evolutionDetail.text = item.evolutionDetails
+        holder.evolutionDetail.text = evolutionDetails
         holder.evolutionTrigger.text = item.evolutionTrigger
 
         holder.pokemonPic.load(imageUrl) {

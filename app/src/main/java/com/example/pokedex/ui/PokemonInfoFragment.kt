@@ -1,10 +1,14 @@
 package com.example.pokedex.ui
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -44,7 +48,6 @@ class PokemonInfoFragment : Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,8 +74,10 @@ class PokemonInfoFragment : Fragment() {
         // Header card bindings.
         binding.pokemonName.text = currentPokemon.pokemonName
         binding.pokemonNumber.text = format("#%03d", currentPokemon.nationalNum)
-        binding.height.text = "HEIGHT: ${currentPokemon.height} m"
-        binding.weight.text = "WEIGHT: ${currentPokemon.weight} kg"
+        binding.height.text =
+            getString(R.string.height, currentPokemon.height.toString())
+        binding.weight.text =
+            getString(R.string.weight, currentPokemon.weight.toString())
         binding.genus.text = currentPokemon.genus
 
         // Description binding.
@@ -84,80 +89,62 @@ class PokemonInfoFragment : Fragment() {
         binding.hiddenAbility.text = currentPokemon.hiddenAbility
 
         // Base stats bindings.
-        binding.hpStat.text = "hp: ${currentPokemon.hpStat}"
+        binding.hpStat.text =
+            getString(R.string.hp_stat, currentPokemon.hpStat)
         binding.hpPercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.hpStat, currentPokemon.totalStats)}%"
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.hpStat, currentPokemon.totalStats))
 
-        binding.attackStat.text = "attack: ${currentPokemon.attackStat}"
+        binding.attackStat.text =
+            getString(R.string.attack_stat, currentPokemon.attackStat)
         binding.attackPercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.attackStat, currentPokemon.totalStats)}%"
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.attackStat, currentPokemon.totalStats))
 
-        binding.defenseStat.text = "defense: ${currentPokemon.defenseStat}"
+        binding.defenseStat.text =
+            getString(R.string.defense_stat, currentPokemon.defenseStat)
         binding.defensePercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.defenseStat, currentPokemon.totalStats)}%"
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.defenseStat, currentPokemon.totalStats))
 
-        binding.specialAttackStat.text = "sp. attack: ${currentPokemon.specialAttackStat}"
+        binding.specialAttackStat.text =
+            getString(R.string.special_attack_stat, currentPokemon.specialAttackStat)
         binding.specialAttackPercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.specialAttackStat, currentPokemon.totalStats)}%"
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.specialAttackStat, currentPokemon.totalStats))
 
-        binding.specialDefenseStat.text = "sp. defense: ${currentPokemon.specialDefenseStat}"
+        binding.specialDefenseStat.text =
+            getString(R.string.special_defense_stat, currentPokemon.specialDefenseStat)
         binding.specialDefensePercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.specialDefenseStat, currentPokemon.totalStats)}%"
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.specialDefenseStat, currentPokemon.totalStats))
 
-        binding.speedStat.text = "speed: ${currentPokemon.speedStat}"
+        binding.speedStat.text =
+            getString(R.string.speed_stat, currentPokemon.speedStat)
         binding.speedPercent.text =
-            "${sharedViewModel.getPercent(currentPokemon.speedStat, currentPokemon.totalStats)}%"
+           getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.speedStat, currentPokemon.totalStats))
 
-        binding.totalStats.text = "total:\n${currentPokemon.totalStats}"
+        binding.totalStats.text =
+            getString(R.string.total_stats, currentPokemon.totalStats)
 
+        // context?.packageName == "com.example.pokedex"
+//        binding.type1.setImageResource(
+//            currentPokemon.type1?.let {
+//                resources.getIdentifier(it, "drawable", context?.packageName)
+//            } ?: android.R.color.transparent
+//        )
+//
+//        binding.type2.setImageResource(
+//            currentPokemon.type2?.let {
+//                resources.getIdentifier(it, "drawable", context?.packageName)
+//            } ?: android.R.color.transparent
+//        )
 
-        // Type selections.
-        when (currentPokemon.type1) {
-            "bug" -> binding.type1.setImageResource(R.drawable.bug)
-            "dark" -> binding.type1.setImageResource(R.drawable.dark)
-            "dragon" -> binding.type1.setImageResource(R.drawable.dragon)
-            "electric" -> binding.type1.setImageResource(R.drawable.electric)
-            "fairy" -> binding.type1.setImageResource(R.drawable.fairy)
-            "fighting" -> binding.type1.setImageResource(R.drawable.fighting)
-            "fire" -> binding.type1.setImageResource(R.drawable.fire)
-            "flying" -> binding.type1.setImageResource(R.drawable.flying)
-            "ghost" -> binding.type1.setImageResource(R.drawable.ghost)
-            "grass" -> binding.type1.setImageResource(R.drawable.grass)
-            "ground" -> binding.type1.setImageResource(R.drawable.ground)
-            "ice" -> binding.type1.setImageResource(R.drawable.ice)
-            "normal" -> binding.type1.setImageResource(R.drawable.normal)
-            "poison" -> binding.type1.setImageResource(R.drawable.poison)
-            "rock" -> binding.type1.setImageResource(R.drawable.rock)
-            "steel" -> binding.type1.setImageResource(R.drawable.steel)
-            "water" -> binding.type1.setImageResource(R.drawable.water)
-            "psychic" -> binding.type1.setImageResource(R.drawable.psychic)
-            null -> binding.type1.setImageResource(android.R.color.transparent)
+        fun ImageView.setDrawableName(type: String?) {
+            setImageResource(
+                type?.let {
+                    resources.getIdentifier(it, "drawable", context?.packageName)
+                } ?: android.R.color.transparent
+            )
         }
 
-        when (currentPokemon.type2) {
-            "bug" -> binding.type2.setImageResource(R.drawable.bug)
-            "dark" -> binding.type2.setImageResource(R.drawable.dark)
-            "dragon" -> binding.type2.setImageResource(R.drawable.dragon)
-            "electric" -> binding.type2.setImageResource(R.drawable.electric)
-            "fairy" -> binding.type2.setImageResource(R.drawable.fairy)
-            "fighting" -> binding.type2.setImageResource(R.drawable.fighting)
-            "fire" -> binding.type2.setImageResource(R.drawable.fire)
-            "flying" -> binding.type2.setImageResource(R.drawable.flying)
-            "ghost" -> binding.type2.setImageResource(R.drawable.ghost)
-            "grass" -> binding.type2.setImageResource(R.drawable.grass)
-            "ground" -> binding.type2.setImageResource(R.drawable.ground)
-            "ice" -> binding.type2.setImageResource(R.drawable.ice)
-            "normal" -> binding.type2.setImageResource(R.drawable.normal)
-            "poison" -> binding.type2.setImageResource(R.drawable.poison)
-            "rock" -> binding.type2.setImageResource(R.drawable.rock)
-            "steel" -> binding.type2.setImageResource(R.drawable.steel)
-            "water" -> binding.type2.setImageResource(R.drawable.water)
-            "psychic" -> binding.type2.setImageResource(R.drawable.psychic)
-            null -> binding.type2.setImageResource(android.R.color.transparent)
-        }
-
-
-
+        binding.type1.setDrawableName(currentPokemon.type1)
+        binding.type2.setDrawableName(currentPokemon.type2)
 
         return binding.root
     }

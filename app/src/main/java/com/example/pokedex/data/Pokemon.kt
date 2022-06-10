@@ -4,6 +4,7 @@ import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.pokedex.data.retrieved.EvolutionDetails
 
 @Entity(tableName = "National")
 data class Pokemon(
@@ -19,7 +20,7 @@ data class Pokemon(
     @Nullable
     val type2: String?,
 
-    val description: String,
+    val description: String?,
 
     @ColumnInfo(name = "nationalNum")
     val nationalNum: Int,
@@ -28,7 +29,7 @@ data class Pokemon(
 
     val weight: Double,
 
-    val genus: String,
+    val genus: String?,
 
     val isBaby: Boolean,
 
@@ -58,12 +59,58 @@ data class Pokemon(
     @Nullable
     val evolvesFrom: String?,
 
-    @Nullable
-    val evolutionDetails: String?,
+    val evolutionChain: Int,
 
     @Nullable
     val evolutionTrigger: String?,
 
-    val evolutionChain: Int
+    @Nullable
+    val gender: Int? = null,
 
+    @Nullable
+    val heldItem: String? = null,
+
+    @Nullable
+    val item: String? = null,
+
+    @Nullable
+    val knowMove: String? = null,
+
+    @Nullable
+    val knownMoveType: String? = null,
+
+    @Nullable
+    val location: String? = null,
+
+    @Nullable
+    val minAffection: Int? = null,
+
+    @Nullable
+    val minBeauty: Int? = null,
+
+    @Nullable
+    val minHappiness: Int? = null,
+
+    @Nullable
+    val minLevel: Int? = null,
+
+    @Nullable
+    val needsOverworldRain: Boolean? = false,
+
+    @Nullable
+    val partySpecies: String? = null,
+
+    @Nullable
+    val partyType: String? = null,
+
+    @Nullable
+    val relativePhysicalStats: Int? = null,
+
+    @Nullable
+    val timeOfDay: String? = "",
+
+    @Nullable
+    val tradeSpecies: String? = null,
+
+    val turnUpsideDown: Boolean? = false
 )

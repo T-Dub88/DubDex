@@ -2,7 +2,6 @@ package com.example.pokedex.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -12,7 +11,7 @@ interface PokemonDao {
     suspend fun insert(pokemon: Pokemon)
 
     // Method for updating a row in the database.
-    @Update()
+    @Update
     suspend fun updatePokemonDatabase(pokemon: Pokemon)
 
     // Query for generating the list of distinct evolution chain numbers.

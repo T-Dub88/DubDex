@@ -34,7 +34,6 @@ interface DexApiService {
 
     @GET("evolution-chain/{chainNumber}")
     suspend fun getChainData(@Path("chainNumber") chainNumber: Int): EvolutionChain
-
 }
 
 object DexApi {

@@ -8,6 +8,9 @@ import androidx.room.*
 interface PokemonDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAlternate(pokemon: AlternateForm)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pokemon: Pokemon)
 
     // Method for updating a row in the database.

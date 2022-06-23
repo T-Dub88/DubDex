@@ -3,6 +3,7 @@ package com.example.pokedex.viewmodel
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.pokedex.data.AlternateForm
 import com.example.pokedex.data.Pokemon
 import com.example.pokedex.data.PokemonDao
 import com.example.pokedex.data.SortingData
@@ -190,11 +191,12 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         val speedStat: Int = getStat(stats.await(), "speed")
         val evolvesFrom: String? = details.await().evolvesFrom?.name
         val evolutionTrigger: String? = null
-        val evolutionChain: Int = setEvolutionChainNumber(details.await().evolutionChain.url)
+        val evolutionChain: Int = parseUrl(details.await().evolutionChain.url)
 
         // Pass the retrieved parameters to the entity constructor.
         addNewPokemon(
             details.await().pokedexNumbers[0].entryNumber,
+            stats.await().species.name,
             stats.await().name,
             type1,
             type2,
@@ -218,6 +220,10 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             evolutionChain
         )
         Log.i("complete", number)
+
+        if (details.await().varieties.size > 1) {
+            launchFormsDownload(details.await().varieties)
+        }
     }
 
     // Gather details about the Pokemon.
@@ -230,9 +236,102 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         return DexApi.retrofitService.getPokemonStats(name)
     }
 
+    // Initialize adding alternate forms of pokemon.
+    private fun launchFormsDownload(formsList: List<PokemonDetails.Variety>) {
+        for (form in formsList) {
+            if (!form.isDefault) {
+                viewModelScope.launch {
+                    val formNumber: Int = parseUrl(form.pokemon.url)
+                    downloadAlternateData(formNumber)
+                }
+            }
+        }
+    }
+
+    // Gathers data for passing to the construction of an alternate entity.
+    private suspend fun downloadAlternateData(formNumber: Int) {
+        val stats = viewModelScope.async { DexApi.retrofitService.getPokemonStats(formNumber.toString()) }
+        val id: Int = stats.await().id
+        val species: String = stats.await().species.name
+        val name: String = stats.await().name
+        val type1: String? = getType(stats.await(), 1)
+        val type2: String? = getType(stats.await(), 2)
+        val height: Double = stats.await().height.toDouble().div(10)
+        val weight: Double = stats.await().weight.toDouble().div(10)
+        val ability1: String? = getAbility(stats.await(),1)
+        val ability2: String? = getAbility(stats.await(), 2)
+        val hiddenAbility: String? = getAbility(stats.await(), 3)
+        val hpStat: Int = getStat(stats.await(), "hp")
+        val attackStat: Int = getStat(stats.await(), "attack")
+        val defenseStat: Int = getStat(stats.await(), "defense")
+        val specialAttackStat: Int = getStat(stats.await(), "special-attack")
+        val specialDefenseStat: Int = getStat(stats.await(), "special-defense")
+        val speedStat: Int = getStat(stats.await(), "speed")
+
+        addAlternateForm(
+            id,
+            species,
+            name,
+            type1,
+            type2,
+            height,
+            weight,
+            ability1,
+            ability2,
+            hiddenAbility,
+            hpStat,
+            attackStat,
+            defenseStat,
+            specialAttackStat,
+            specialDefenseStat,
+            speedStat
+        )
+    }
+    // Uses parameters to pass new entry into the database.
+    private fun addAlternateForm(
+        id: Int,
+        species: String,
+        name: String,
+        type1: String?,
+        type2: String?,
+        height: Double,
+        weight: Double,
+        ability1: String?,
+        ability2: String?,
+        hiddenAbility: String?,
+        hpStat: Int,
+        attackStat: Int,
+        defenseStat: Int,
+        specialAttackStat: Int,
+        specialDefenseStat: Int,
+        speedStat: Int
+    ) {
+        val newAlternateForm: AlternateForm = getNewFormEntity(
+            id,
+            species,
+            name,
+            type1,
+            type2,
+            height,
+            weight,
+            ability1,
+            ability2,
+            hiddenAbility,
+            hpStat,
+            attackStat,
+            defenseStat,
+            specialAttackStat,
+            specialDefenseStat,
+            speedStat
+        )
+
+        insertAlternateForm(newAlternateForm)
+    }
+
     // Uses parameters to retrieve a newPokemon entity
     private fun addNewPokemon(
         id: Int,
+        species: String,
         pokemonName: String,
         type1: String?,
         type2: String?,
@@ -257,6 +356,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     ) {
         val newPokemon = getNewPokemonEntry(
             id,
+            species,
             pokemonName,
             type1,
             type2,
@@ -280,11 +380,53 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             evolutionChain
         )
         insertPokemon(newPokemon)
+        Log.i("complete", id.toString())
+    }
+
+    // Constructs the alternate form data into an entity for the database.
+    private fun getNewFormEntity(
+        id: Int,
+        species: String,
+        name: String,
+        type1: String?,
+        type2: String?,
+        height: Double,
+        weight: Double,
+        ability1: String?,
+        ability2: String?,
+        hiddenAbility: String?,
+        hpStat: Int,
+        attackStat: Int,
+        defenseStat: Int,
+        specialAttackStat: Int,
+        specialDefenseStat: Int,
+        speedStat: Int
+    ): AlternateForm {
+        return AlternateForm(
+            id = id,
+            species = species,
+            name = name,
+            type1 = type1,
+            type2 = type2,
+            height = height,
+            weight = weight,
+            ability1 = ability1,
+            ability2 = ability2,
+            hiddenAbility = hiddenAbility,
+            hpStat = hpStat,
+            attackStat = attackStat,
+            defenseStat = defenseStat,
+            specialAttackStat = specialAttackStat,
+            specialDefenseStat = specialDefenseStat,
+            speedStat = speedStat,
+            totalStats = hpStat + attackStat + defenseStat + specialAttackStat + specialDefenseStat + speedStat
+        )
     }
 
     // Constructs the pokemon entity.
     private fun getNewPokemonEntry(
         id: Int,
+        species: String,
         pokemonName: String,
         type1: String?,
         type2: String?,
@@ -309,6 +451,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     ): Pokemon {
         return Pokemon(
             id = id,
+            species = species,
             pokemonName = pokemonName,
             type1 = type1,
             type2 = type2,
@@ -338,6 +481,13 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     private fun insertPokemon(pokemon: Pokemon) {
         viewModelScope.launch {
             pokemonDao.insert(pokemon)
+        }
+    }
+
+    // Stores the alternate for entity into the database.
+    private fun insertAlternateForm(pokemon: AlternateForm) {
+        viewModelScope.launch {
+            pokemonDao.insertAlternate(pokemon)
         }
     }
 
@@ -449,7 +599,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     }
 
     // Sets the evolution chain number for each pokemon in the database.
-    private fun setEvolutionChainNumber(url: String): Int {
+    private fun parseUrl(url: String): Int {
         val uri: Uri = Uri.parse(url)
         return uri.lastPathSegment?.toInt() ?: 0
     }

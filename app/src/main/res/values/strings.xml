@@ -48,6 +48,7 @@
     <string name="weight">WEIGHT: %s kg</string>
 
 <!--    Evolution Data string resouces-->
+<!--    try type f for int-->
     <string name="evolves_from">evolves from:\n%s</string>
     <string name="baby">baby pokemon\n</string>
     <string name="no_evolution">no prior evolution</string>

@@ -4,12 +4,14 @@ import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.pokedex.data.retrieved.EvolutionDetails
 
 @Entity(tableName = "National")
 data class Pokemon(
     @PrimaryKey
     val id: Int,
+
+    // Used for linking to alternate forms.
+    val species: String,
 
     @ColumnInfo(name = "name")
     val pokemonName: String,
@@ -22,7 +24,6 @@ data class Pokemon(
 
     val description: String?,
 
-    @ColumnInfo(name = "nationalNum")
     val nationalNum: Int,
 
     val height: Double,

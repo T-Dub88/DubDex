@@ -13,7 +13,8 @@ data class PokemonStats(
     val weight: Int
 ) {
     data class Species(
-        val name: String
+        val name: String,
+        val url: String
     )
 
     data class BaseStats(

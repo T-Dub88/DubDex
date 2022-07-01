@@ -24,10 +24,16 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
     // Used to set the appropriate list of evolutions.
     private val _evolutionChainNum = MutableLiveData(1)
+    private val _species = MutableLiveData("")
 
     // Sets the proper evolution chain list based on the evolution chain num.
     val evolutionList: LiveData<List<Pokemon>> = _evolutionChainNum.switchMap {
         pokemonDao.getChainList(_evolutionChainNum.value)
+    }
+
+    // Sets the proper alternate form list based on the pokemon species.
+    val alternateFormList: LiveData<List<AlternateForm>> = _species.switchMap {
+        pokemonDao.getAlternateFormsList(_species.value)
     }
 
     // Sets the proper list of pokemon based on the sorting data values.
@@ -252,6 +258,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     private suspend fun downloadAlternateData(formNumber: Int) {
         val stats = viewModelScope.async { DexApi.retrofitService.getPokemonStats(formNumber.toString()) }
         val id: Int = stats.await().id
+        val nationalNum: Int = parseUrl(stats.await().species.url)
         val species: String = stats.await().species.name
         val name: String = stats.await().name
         val type1: String? = getType(stats.await(), 1)
@@ -270,6 +277,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
         addAlternateForm(
             id,
+            nationalNum,
             species,
             name,
             type1,
@@ -290,6 +298,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     // Uses parameters to pass new entry into the database.
     private fun addAlternateForm(
         id: Int,
+        nationalNum: Int,
         species: String,
         name: String,
         type1: String?,
@@ -308,6 +317,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     ) {
         val newAlternateForm: AlternateForm = getNewFormEntity(
             id,
+            nationalNum,
             species,
             name,
             type1,
@@ -386,6 +396,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     // Constructs the alternate form data into an entity for the database.
     private fun getNewFormEntity(
         id: Int,
+        nationalNum: Int,
         species: String,
         name: String,
         type1: String?,
@@ -404,6 +415,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     ): AlternateForm {
         return AlternateForm(
             id = id,
+            nationalNum = nationalNum,
             species = species,
             name = name,
             type1 = type1,
@@ -528,6 +540,15 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         return evolutionList.value?.find { it.nationalNum == id }
     }
 
+    fun getAlternateEntity(id: Int): AlternateForm? {
+        return alternateFormList.value?.find { it.id == id }
+    }
+
+    fun getGenus(id: Int): String? {
+        val previousForm: Pokemon? = evolutionList.value?.find { it.id == id }
+        return previousForm?.genus
+    }
+
     // Method that returns an ability or null.
     private fun getAbility(stats: PokemonStats, slot: Int): String? {
         return stats.abilities.find { it.slot == slot }?.ability?.name
@@ -648,6 +669,11 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     // Retrieves the evolution chain for use in pokemon info fragment.
     fun getEvolutionChain(chainNum: Int) {
         _evolutionChainNum.value = chainNum
+    }
+
+    // Sets the species name for use in finding alternate forms in the database.
+    fun getAlternateForms(speciesName: String) {
+        _species.value = speciesName
     }
 
 }

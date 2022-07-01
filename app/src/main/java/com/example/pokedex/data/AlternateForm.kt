@@ -10,6 +10,8 @@ data class AlternateForm(
     @PrimaryKey
     val id: Int,
 
+    val nationalNum: Int,
+
     // Use species to link back to the original form.
     val species: String,
 

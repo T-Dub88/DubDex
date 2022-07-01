@@ -69,20 +69,6 @@
                 app:layout_constraintBottom_toTopOf="@id/evolves_from"
                 android:layout_margin="4dp" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/evolution_chain_header"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                android:gravity="center"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:textAllCaps="true"-->
-<!--                android:layout_margin="8dp"-->
-<!--                android:textSize="18sp"-->
-<!--                android:text="@string/evolution_chain"/>-->
-
             <TextView
                 android:id="@+id/evolves_from"
                 android:layout_width="wrap_content"

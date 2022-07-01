@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.R
 import com.example.pokedex.data.Pokemon
+import com.example.pokedex.ui.AlternateFormFragmentDirections
 import com.example.pokedex.ui.PokemonInfoFragmentDirections
 import okhttp3.internal.format
 
 class EvolutionAdapter(
     private val data: List<Pokemon>,
+    private val infoFragment: Boolean
+
 ) : RecyclerView.Adapter<EvolutionAdapter.ItemViewHolder> () {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -142,7 +145,6 @@ class EvolutionAdapter(
             resources.getString(R.string.no_evolution)
         }
 
-//        holder.evolutionDetail.text = item.evolutionDetails
         holder.evolutionDetail.text = evolutionDetails
         holder.evolutionTrigger.text = item.evolutionTrigger
 
@@ -153,11 +155,19 @@ class EvolutionAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val action = PokemonInfoFragmentDirections
-                .actionPokemonInfoFragmentSelf(
-                    pokemonPlacement = item.nationalNum.toString(),
-                    evolutionNav = true
-                )
+            val action = when (infoFragment) {
+                true -> PokemonInfoFragmentDirections
+                    .actionPokemonInfoFragmentSelf(
+                        pokemonPlacement = item.nationalNum.toString(),
+                        evolutionNav = true
+                    )
+                else -> AlternateFormFragmentDirections
+                    .actionAlternateFormFragmentToPokemonInfoFragment(
+                        pokemonPlacement = item.nationalNum.toString(),
+                        evolutionNav = true
+                    )
+            }
+
             holder.view.findNavController().navigate(action)
         }
 

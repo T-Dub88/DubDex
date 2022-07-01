@@ -21,6 +21,10 @@ interface PokemonDao {
     @Query("SELECT DISTINCT evolutionChain FROM National")
     suspend fun getChainNumberList(): List<Int>
 
+    // Query for generating the list of alternate forms for a pokemon.
+    @Query("SELECT * FROM AlternateForms WHERE species = :species")
+    fun getAlternateFormsList(species: String?): LiveData<List<AlternateForm>>
+
     //Query for getting evolution chain list for a pokemon.
     @Query("SELECT * FROM National WHERE evolutionChain = :chainNum ORDER BY isBaby DESC")
     fun getChainList(chainNum: Int?): LiveData<List<Pokemon>>

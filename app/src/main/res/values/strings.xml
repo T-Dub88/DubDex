@@ -28,7 +28,7 @@
     <string name="adding_evolutions">Adding Evolutions…</string>
     <string name="empty" />
 
-<!--    Stats string resources-->
+    <!--    Stats string resources-->
     <string name="hp_stat_sort">hp:\n%d</string>
     <string name="hp_stat">hp: %d</string>
     <string name="attack_stat_short">atk:\n%d</string>
@@ -47,8 +47,8 @@
     <string name="height">HEIGHT: %s m</string>
     <string name="weight">WEIGHT: %s kg</string>
 
-<!--    Evolution Data string resouces-->
-<!--    try type f for int-->
+    <!--    Evolution Data string resources-->
+    <!--    try type f for int-->
     <string name="evolves_from">evolves from:\n%s</string>
     <string name="baby">baby pokemon\n</string>
     <string name="no_evolution">no prior evolution</string>
@@ -73,5 +73,9 @@
     <string name="time">time:\n%s\n</string>
     <string name="trade">trade:\n%s\n</string>
     <string name="upside_down">turn upside-down\n</string>
+
+    <string name="alternate_forms">alternate forms:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

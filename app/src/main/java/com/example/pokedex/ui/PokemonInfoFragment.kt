@@ -3,8 +3,7 @@ package com.example.pokedex.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.INVISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
@@ -64,17 +63,41 @@ class PokemonInfoFragment : Fragment() {
         sharedViewModel.getEvolutionChain(currentPokemon.evolutionChain)
         sharedViewModel.getAlternateForms(currentPokemon.species)
 
+        // Removes evolution card if pokemon doesn't evolve.
+        sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
+            if (it.size <= 1) {
+                binding.evolutionChainCard.visibility = GONE
+            }
+
+            else {
+                binding.evolutionChainCard.visibility = VISIBLE
+            }
+        }
+
+        // Removes alternate card if pokemon has no alternate forms.
+        sharedViewModel.alternateFormList.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                binding.alternateFormsCard.visibility = GONE
+            }
+
+            else {
+                binding.alternateFormsCard.visibility = VISIBLE
+            }
+        }
+
+        // Removes view if missing second ability.
         if (currentPokemon.ability2 == null) {
             binding.or.visibility = GONE
         }
 
+        // Removes view if missing hidden ability.
         if (currentPokemon.hiddenAbility == null) {
             binding.hiddenAbilityHeader.visibility = GONE
             binding.hiddenAbility.visibility = GONE
             binding.abilitiesDivider.visibility = INVISIBLE
         }
 
-
+        // Loads image of the current pokemon.
         binding.pokemonImage.load(
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon.nationalNum}.png"
         ) {

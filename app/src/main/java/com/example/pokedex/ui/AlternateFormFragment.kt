@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
@@ -63,15 +64,26 @@ class AlternateFormFragment : Fragment() {
         // Sets a reference to the current fragments pokemon.
         val currentPokemon = sharedViewModel.getAlternateEntity(pokemonPlacement.toInt())!!
 
+        // Removes evolution card if pokemon doesn't evolve.
+        sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
+            if (it.size <= 1) {
+                binding.evolutionChainCard.visibility = GONE
+            }
+
+            else {
+                binding.evolutionChainCard.visibility = VISIBLE
+            }
+        }
+
         // Hides ability views if abilities are missing.
         if (currentPokemon.ability2 == null) {
-            binding.or.visibility = View.GONE
+            binding.or.visibility = GONE
         }
 
         if (currentPokemon.hiddenAbility == null) {
-            binding.hiddenAbilityHeader.visibility = View.GONE
-            binding.hiddenAbility.visibility = View.GONE
-            binding.abilitiesDivider.visibility = View.INVISIBLE
+            binding.hiddenAbilityHeader.visibility = GONE
+            binding.hiddenAbility.visibility = GONE
+            binding.abilitiesDivider.visibility = INVISIBLE
         }
 
         // Retrieves image of pokemon.

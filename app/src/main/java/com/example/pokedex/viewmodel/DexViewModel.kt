@@ -24,6 +24,8 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
     // Used to set the appropriate list of evolutions.
     private val _evolutionChainNum = MutableLiveData(1)
+
+    // Used to set the appropriate list of alternate forms.
     private val _species = MutableLiveData("")
 
     // Sets the proper evolution chain list based on the evolution chain num.
@@ -225,7 +227,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             evolutionTrigger,
             evolutionChain
         )
-        Log.i("complete", number)
 
         if (details.await().varieties.size > 1) {
             launchFormsDownload(details.await().varieties)
@@ -334,8 +335,8 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             specialDefenseStat,
             speedStat
         )
-
         insertAlternateForm(newAlternateForm)
+        Log.i("complete", id.toString())
     }
 
     // Uses parameters to retrieve a newPokemon entity

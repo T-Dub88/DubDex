@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.pokedex.PokedexApplication
 import com.example.pokedex.R
+import com.example.pokedex.data.SortingData.SortByEnum
 import com.example.pokedex.databinding.FragmentSortingOptionsDialogBinding
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
@@ -37,14 +38,14 @@ class SortingOptionsDialog : BottomSheetDialogFragment() {
         _binding = FragmentSortingOptionsDialogBinding.inflate(inflater, container, false)
 
         when (sharedViewModel.sortingData.value?.sortBy) {
-            "nationalNum" -> binding.orderChoices.check(R.id.national_num)
-            "name" -> binding.orderChoices.check(R.id.alphabetical)
-            "hpStat" -> binding.orderChoices.check(R.id.hp)
-            "attackStat" -> binding.orderChoices.check(R.id.attack)
-            "defenseStat" -> binding.orderChoices.check(R.id.defense)
-            "specialAttackStat" -> binding.orderChoices.check(R.id.special_attack)
-            "specialDefenseStat" -> binding.orderChoices.check(R.id.special_defense)
-            "totalStats" -> binding.orderChoices.check(R.id.total)
+            SortByEnum.NATIONAL_NUM -> binding.orderChoices.check(R.id.national_num)
+            SortByEnum.NAME -> binding.orderChoices.check(R.id.alphabetical)
+            SortByEnum.HP_STAT -> binding.orderChoices.check(R.id.hp)
+            SortByEnum.ATTACK_STAT -> binding.orderChoices.check(R.id.attack)
+            SortByEnum.DEFENSE_STAT -> binding.orderChoices.check(R.id.defense)
+            SortByEnum.SPECIAL_ATTACK_STAT -> binding.orderChoices.check(R.id.special_attack)
+            SortByEnum.SPECIAL_DEFENSE_STAT -> binding.orderChoices.check(R.id.special_defense)
+            SortByEnum.TOTAL_STATS -> binding.orderChoices.check(R.id.total)
             else -> binding.orderChoices.check(R.id.speed)
         }
 
@@ -55,15 +56,15 @@ class SortingOptionsDialog : BottomSheetDialogFragment() {
 
         binding.applySorting.setOnClickListener {
             val orderStat = when (binding.orderChoices.checkedRadioButtonId) {
-                R.id.national_num -> "nationalNum"
-                R.id.alphabetical -> "name"
-                R.id.hp -> "hpStat"
-                R.id.attack -> "attackStat"
-                R.id.defense -> "defenseStat"
-                R.id.special_attack -> "specialAttackStat"
-                R.id.special_defense -> "specialDefenseStat"
-                R.id.total -> "totalStats"
-                else -> "speedStat"
+                R.id.national_num -> SortByEnum.NATIONAL_NUM
+                R.id.alphabetical -> SortByEnum.NAME
+                R.id.hp -> SortByEnum.HP_STAT
+                R.id.attack -> SortByEnum.ATTACK_STAT
+                R.id.defense -> SortByEnum.DEFENSE_STAT
+                R.id.special_attack -> SortByEnum.SPECIAL_ATTACK_STAT
+                R.id.special_defense -> SortByEnum.SPECIAL_DEFENSE_STAT
+                R.id.total -> SortByEnum.TOTAL_STATS
+                else -> SortByEnum.SPEED_STAT
             }
 
             val ascending = when (binding.ascendingDescending.isChecked) {

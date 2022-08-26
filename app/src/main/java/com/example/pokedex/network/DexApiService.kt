@@ -1,8 +1,6 @@
 package com.example.pokedex.network
 
-import com.example.pokedex.data.retrieved.DexEntry
-import com.example.pokedex.data.retrieved.PokemonDetails
-import com.example.pokedex.data.retrieved.PokemonStats
+import com.example.pokedex.data.retrieved.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -31,6 +29,11 @@ interface DexApiService {
     @GET("pokemon/{pokemonNumber}")
     suspend fun getPokemonStats(@Path("pokemonNumber") name: String): PokemonStats
 
+    @GET("evolution-chain")
+    suspend fun getChainCount(): EvolutionChainCount
+
+    @GET("evolution-chain/{chainNumber}")
+    suspend fun getChainData(@Path("chainNumber") chainNumber: Int): EvolutionChain
 }
 
 object DexApi {

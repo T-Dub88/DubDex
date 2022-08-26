@@ -7,10 +7,16 @@ data class PokemonStats(
     val height: Int,
     val id: Int,
     val name: String,
+    val species: Species,
     val stats: List<BaseStats>,
     val types: List<TypeData>,
     val weight: Int
 ) {
+    data class Species(
+        val name: String,
+        val url: String
+    )
+
     data class BaseStats(
         @Json(name = "base_stat")
         val baseStat: Int,

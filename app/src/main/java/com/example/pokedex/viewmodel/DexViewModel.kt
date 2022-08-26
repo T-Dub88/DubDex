@@ -1,11 +1,14 @@
 package com.example.pokedex.viewmodel
 
-import android.os.Parcelable
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.pokedex.data.AlternateForm
 import com.example.pokedex.data.Pokemon
 import com.example.pokedex.data.PokemonDao
 import com.example.pokedex.data.SortingData
+import com.example.pokedex.data.SortingData.SortByEnum
+import com.example.pokedex.data.retrieved.EvolvesTo
 import com.example.pokedex.data.retrieved.PokemonDetails
 import com.example.pokedex.data.retrieved.PokemonStats
 import com.example.pokedex.network.DexApi
@@ -15,93 +18,110 @@ import java.text.DecimalFormat
 
 class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
-    private val _sortingData = MutableLiveData(SortingData("", true, "nationalNum", ""))
+    // Sorting data class used to set the appropriate display list based on user sort options.
+    private val _sortingData = MutableLiveData(SortingData("", true, SortByEnum.NATIONAL_NUM, ""))
     val sortingData: LiveData<SortingData> = _sortingData
 
-    // Needs to take all 3 search parameters into account.
+    // Used to set the appropriate list of evolutions.
+    private val _evolutionChainNum = MutableLiveData(1)
+
+    // Used to set the appropriate list of alternate forms.
+    private val _species = MutableLiveData("")
+
+    // Sets the proper evolution chain list based on the evolution chain num.
+    val evolutionList: LiveData<List<Pokemon>> = _evolutionChainNum.switchMap {
+        pokemonDao.getChainList(_evolutionChainNum.value)
+    }
+
+    // Sets the proper alternate form list based on the pokemon species.
+    val alternateFormList: LiveData<List<AlternateForm>> = _species.switchMap {
+        pokemonDao.getAlternateFormsList(_species.value)
+    }
+
+    // Sets the proper list of pokemon based on the sorting data values.
     val pokemonEntities: LiveData<List<Pokemon>> = _sortingData.switchMap {
 
-        if (_sortingData.value?.sortBy == "nationalNum" &&
+        if (_sortingData.value?.sortBy == SortByEnum.NATIONAL_NUM &&
                 _sortingData.value?.ascending == true) {
             pokemonDao.searchByNumAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "nationalNum" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.NATIONAL_NUM &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByNumDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "name" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.NAME &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchByNameAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "name" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.NAME &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByNameDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "hpStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.HP_STAT &&
             _sortingData.value?.ascending == true ) {
             pokemonDao.searchByHpAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "hpStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.HP_STAT &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByHpDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "attackStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.ATTACK_STAT &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchByAttackAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "attackStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.ATTACK_STAT &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByAttackDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "defenseStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.DEFENSE_STAT &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchByDefenseAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "defenseStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.DEFENSE_STAT &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByDefenseDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "specialAttackStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.SPECIAL_ATTACK_STAT &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchBySpecialAttackAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "specialAttackStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.SPECIAL_ATTACK_STAT &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchBySpecialAttackDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "specialDefenseStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.SPECIAL_DEFENSE_STAT &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchBySpecialDefenseAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "specialDefenseStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.SPECIAL_DEFENSE_STAT &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchBySpecialDefenseDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "totalStats" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.TOTAL_STATS &&
                 _sortingData.value?.ascending == true) {
             pokemonDao.searchByTotalAsc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "totalStats" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.TOTAL_STATS &&
             _sortingData.value?.ascending == false) {
             pokemonDao.searchByTotalDesc(_sortingData.value?.searchText)
         }
 
-        else if (_sortingData.value?.sortBy == "speedStat" &&
+        else if (_sortingData.value?.sortBy == SortByEnum.SPEED_STAT &&
             _sortingData.value?.ascending == true) {
             pokemonDao.searchBySpeedAsc(_sortingData.value?.searchText)
         }
@@ -120,6 +140,30 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         }
     }
 
+    // Initializes a coroutine to launch the chain count async operation.
+    fun initializeChainCount() {
+        viewModelScope.launch {
+            getChainCount()
+        }
+    }
+
+    // Used to get the evolution chain data for use in populating the database.
+    private suspend fun getChainCount() {
+        // Returns the chain numbers in a list.
+        val chainList = viewModelScope.async {
+            pokemonDao.getChainNumberList()
+        }
+
+        // Get data for each chain number in the list.
+        for (i in chainList.await()) {
+            val chainData = viewModelScope.async { DexApi.retrofitService.getChainData(i) }
+            // Passes data to the function to launch database population.
+            viewModelScope.launch { getEvolutionData(chainData.await().chain) }
+
+        }
+
+    }
+
     // Retrieves a list of pokemon in the national dex.
     private suspend fun getPokemonEntries() {
         val pokemonList = viewModelScope.async {
@@ -131,7 +175,6 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
                 Log.i("national_list", pokemon.toString())
                 gatherData(pokemon.entryNumber.toString())
             }
-
         }
     }
 
@@ -139,8 +182,8 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     private suspend fun gatherData(number: String) {
         val details = viewModelScope.async { getDetails(number) }
         val stats = viewModelScope.async { getStats(number) }
-        val languageDescription: Int = getLanguageDescription(details.await())
-        val languageGenus: Int = getLanguageGenus(details.await())
+        val languageDescription = getLanguageDescription(details.await())?.flavorText
+        val genus = getLanguageGenus(details.await())?.genus
         val height: Double = stats.await().height.toDouble().div(10)
         val weight: Double = stats.await().weight.toDouble().div(10)
         val ability1: String? = getAbility(stats.await(),1)
@@ -154,18 +197,23 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         val specialAttackStat: Int = getStat(stats.await(), "special-attack")
         val specialDefenseStat: Int = getStat(stats.await(), "special-defense")
         val speedStat: Int = getStat(stats.await(), "speed")
+        val evolvesFrom: String? = details.await().evolvesFrom?.name
+        val evolutionTrigger: String? = null
+        val evolutionChain: Int = parseUrl(details.await().evolutionChain.url)
 
         // Pass the retrieved parameters to the entity constructor.
         addNewPokemon(
             details.await().pokedexNumbers[0].entryNumber,
+            stats.await().species.name,
             stats.await().name,
             type1,
             type2,
-            details.await().flavorTextEntries[languageDescription].flavorText,
+            languageDescription,
             details.await().pokedexNumbers[0].entryNumber,
             height,
             weight,
-            details.await().genera[languageGenus].genus,
+            genus,
+            details.await().isBaby,
             ability1,
             ability2,
             hiddenAbility,
@@ -174,36 +222,15 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             defenseStat,
             specialAttackStat,
             specialDefenseStat,
-            speedStat
+            speedStat,
+            evolvesFrom,
+            evolutionTrigger,
+            evolutionChain
         )
 
-//        try {
-//            addNewPokemon(
-//                details.await().pokedexNumbers[0].entryNumber,
-//                stats.await().name,
-//                stats.await().types[0].type.name,
-//                stats.await().types[1].type.name,
-//                details.await().flavorTextEntries[languageDescription].flavorText,
-//                details.await().pokedexNumbers[0].entryNumber,
-//                height,
-//                weight,
-//                details.await().genera[languageGenus].genus
-//            )
-//        } catch (e: IndexOutOfBoundsException) {
-//            addNewPokemon(
-//                details.await().pokedexNumbers[0].entryNumber,
-//                stats.await().name,
-//                stats.await().types[0].type.name,
-//                "blank",
-//                details.await().flavorTextEntries[languageDescription].flavorText,
-//                details.await().pokedexNumbers[0].entryNumber,
-//                height,
-//                weight,
-//                details.await().genera[languageGenus].genus
-//            )
-//        }
-
-        Log.i("complete", number)
+        if (details.await().varieties.size > 1) {
+            launchFormsDownload(details.await().varieties)
+        }
     }
 
     // Gather details about the Pokemon.
@@ -216,37 +243,48 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         return DexApi.retrofitService.getPokemonStats(name)
     }
 
-    // Uses parameters to retrieve a newPokemon entity
-    private fun addNewPokemon(
-        id: Int,
-        pokemonName: String,
-        type1: String?,
-        type2: String?,
-        description: String,
-        nationalNum: Int,
-        height: Double,
-        weight: Double,
-        genus: String,
-        ability1: String?,
-        ability2: String?,
-        hiddenAbility: String?,
-        hpStat: Int,
-        attackStat: Int,
-        defenseStat: Int,
-        specialAttackStat: Int,
-        specialDefenseStat: Int,
-        speedStat: Int
-    ) {
-        val newPokemon = getNewPokemonEntry(
+    // Initialize adding alternate forms of pokemon.
+    private fun launchFormsDownload(formsList: List<PokemonDetails.Variety>) {
+        for (form in formsList) {
+            if (!form.isDefault) {
+                viewModelScope.launch {
+                    val formNumber: Int = parseUrl(form.pokemon.url)
+                    downloadAlternateData(formNumber)
+                }
+            }
+        }
+    }
+
+    // Gathers data for passing to the construction of an alternate entity.
+    private suspend fun downloadAlternateData(formNumber: Int) {
+        val stats = viewModelScope.async { DexApi.retrofitService.getPokemonStats(formNumber.toString()) }
+        val id: Int = stats.await().id
+        val nationalNum: Int = parseUrl(stats.await().species.url)
+        val species: String = stats.await().species.name
+        val name: String = stats.await().name
+        val type1: String? = getType(stats.await(), 1)
+        val type2: String? = getType(stats.await(), 2)
+        val height: Double = stats.await().height.toDouble().div(10)
+        val weight: Double = stats.await().weight.toDouble().div(10)
+        val ability1: String? = getAbility(stats.await(),1)
+        val ability2: String? = getAbility(stats.await(), 2)
+        val hiddenAbility: String? = getAbility(stats.await(), 3)
+        val hpStat: Int = getStat(stats.await(), "hp")
+        val attackStat: Int = getStat(stats.await(), "attack")
+        val defenseStat: Int = getStat(stats.await(), "defense")
+        val specialAttackStat: Int = getStat(stats.await(), "special-attack")
+        val specialDefenseStat: Int = getStat(stats.await(), "special-defense")
+        val speedStat: Int = getStat(stats.await(), "speed")
+
+        addAlternateForm(
             id,
-            pokemonName,
+            nationalNum,
+            species,
+            name,
             type1,
             type2,
-            description,
-            nationalNum,
             height,
             weight,
-            genus,
             ability1,
             ability2,
             hiddenAbility,
@@ -257,20 +295,17 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             specialDefenseStat,
             speedStat
         )
-        insertPokemon(newPokemon)
     }
-
-    // Constructs the pokemon entity.
-    private fun getNewPokemonEntry(
+    // Uses parameters to pass new entry into the database.
+    private fun addAlternateForm(
         id: Int,
-        pokemonName: String,
+        nationalNum: Int,
+        species: String,
+        name: String,
         type1: String?,
         type2: String?,
-        description: String,
-        nationalNum: Int,
         height: Double,
         weight: Double,
-        genus: String,
         ability1: String?,
         ability2: String?,
         hiddenAbility: String?,
@@ -280,17 +315,114 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         specialAttackStat: Int,
         specialDefenseStat: Int,
         speedStat: Int
-    ): Pokemon {
-        return Pokemon(
+    ) {
+        val newAlternateForm: AlternateForm = getNewFormEntity(
+            id,
+            nationalNum,
+            species,
+            name,
+            type1,
+            type2,
+            height,
+            weight,
+            ability1,
+            ability2,
+            hiddenAbility,
+            hpStat,
+            attackStat,
+            defenseStat,
+            specialAttackStat,
+            specialDefenseStat,
+            speedStat
+        )
+        insertAlternateForm(newAlternateForm)
+        Log.i("complete", id.toString())
+    }
+
+    // Uses parameters to retrieve a newPokemon entity
+    private fun addNewPokemon(
+        id: Int,
+        species: String,
+        pokemonName: String,
+        type1: String?,
+        type2: String?,
+        description: String?,
+        nationalNum: Int,
+        height: Double,
+        weight: Double,
+        genus: String?,
+        isBaby: Boolean,
+        ability1: String?,
+        ability2: String?,
+        hiddenAbility: String?,
+        hpStat: Int,
+        attackStat: Int,
+        defenseStat: Int,
+        specialAttackStat: Int,
+        specialDefenseStat: Int,
+        speedStat: Int,
+        evolvesFrom: String?,
+        evolutionTrigger: String?,
+        evolutionChain: Int
+    ) {
+        val newPokemon = getNewPokemonEntry(
+            id,
+            species,
+            pokemonName,
+            type1,
+            type2,
+            description,
+            nationalNum,
+            height,
+            weight,
+            genus,
+            isBaby,
+            ability1,
+            ability2,
+            hiddenAbility,
+            hpStat,
+            attackStat,
+            defenseStat,
+            specialAttackStat,
+            specialDefenseStat,
+            speedStat,
+            evolvesFrom,
+            evolutionTrigger,
+            evolutionChain
+        )
+        insertPokemon(newPokemon)
+        Log.i("complete", id.toString())
+    }
+
+    // Constructs the alternate form data into an entity for the database.
+    private fun getNewFormEntity(
+        id: Int,
+        nationalNum: Int,
+        species: String,
+        name: String,
+        type1: String?,
+        type2: String?,
+        height: Double,
+        weight: Double,
+        ability1: String?,
+        ability2: String?,
+        hiddenAbility: String?,
+        hpStat: Int,
+        attackStat: Int,
+        defenseStat: Int,
+        specialAttackStat: Int,
+        specialDefenseStat: Int,
+        speedStat: Int
+    ): AlternateForm {
+        return AlternateForm(
             id = id,
-            pokemonName = pokemonName,
+            nationalNum = nationalNum,
+            species = species,
+            name = name,
             type1 = type1,
             type2 = type2,
-            description = description,
-            nationalNum = nationalNum,
             height = height,
             weight = weight,
-            genus = genus,
             ability1 = ability1,
             ability2 = ability2,
             hiddenAbility = hiddenAbility,
@@ -300,7 +432,61 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
             specialAttackStat = specialAttackStat,
             specialDefenseStat = specialDefenseStat,
             speedStat = speedStat,
-            totalStats = speedStat + specialDefenseStat + specialAttackStat + defenseStat + attackStat + hpStat
+            totalStats = hpStat + attackStat + defenseStat + specialAttackStat + specialDefenseStat + speedStat
+        )
+    }
+
+    // Constructs the pokemon entity.
+    private fun getNewPokemonEntry(
+        id: Int,
+        species: String,
+        pokemonName: String,
+        type1: String?,
+        type2: String?,
+        description: String?,
+        nationalNum: Int,
+        height: Double,
+        weight: Double,
+        genus: String?,
+        isBaby: Boolean,
+        ability1: String?,
+        ability2: String?,
+        hiddenAbility: String?,
+        hpStat: Int,
+        attackStat: Int,
+        defenseStat: Int,
+        specialAttackStat: Int,
+        specialDefenseStat: Int,
+        speedStat: Int,
+        evolvesFrom: String?,
+        evolutionTrigger: String?,
+        evolutionChain: Int
+    ): Pokemon {
+        return Pokemon(
+            id = id,
+            species = species,
+            pokemonName = pokemonName,
+            type1 = type1,
+            type2 = type2,
+            description = description,
+            nationalNum = nationalNum,
+            height = height,
+            weight = weight,
+            genus = genus,
+            isBaby = isBaby,
+            ability1 = ability1,
+            ability2 = ability2,
+            hiddenAbility = hiddenAbility,
+            hpStat = hpStat,
+            attackStat = attackStat,
+            defenseStat = defenseStat,
+            specialAttackStat = specialAttackStat,
+            specialDefenseStat = specialDefenseStat,
+            speedStat = speedStat,
+            totalStats = speedStat + specialDefenseStat + specialAttackStat + defenseStat + attackStat + hpStat,
+            evolvesFrom = evolvesFrom,
+            evolutionChain = evolutionChain,
+            evolutionTrigger = evolutionTrigger,
         )
     }
 
@@ -311,93 +497,98 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
         }
     }
 
-    // Returns the index for the first English pokemon description of a Pokemon.
-    private fun getLanguageDescription(details: PokemonDetails): Int {
-        var x = 0
-        while (true) {
-            if (details.flavorTextEntries[x].language.name == "en") {
-                return x
-            } else {
-                x += 1
-            }
+    // Stores the alternate for entity into the database.
+    private fun insertAlternateForm(pokemon: AlternateForm) {
+        viewModelScope.launch {
+            pokemonDao.insertAlternate(pokemon)
         }
     }
 
-    private fun getLanguageGenus(details: PokemonDetails): Int {
-        var x = 0
-        while (true) {
-            if (details.genera[x].language.name == "en") {
-                return x
-            } else {
-                x += 1
-            }
-        }
+    // Returns the index for the first English pokemon description of a Pokemon.
+    // Now returns the flavor text object with the correct language.
+    private fun getLanguageDescription(details: PokemonDetails): PokemonDetails.FlavorText? {
+//        var x = 0
+        return details.flavorTextEntries.find { it.language.name == "en" }
+//        while (true) {
+//            if (details.flavorTextEntries[x].language.name == "en") {
+//                return x
+//            } else {
+//                x += 1
+//            }
+//        }
+    }
+
+    // Returns the index of the first English genera.
+    // Now returns the 1st genera object with the correct language.
+    private fun getLanguageGenus(details: PokemonDetails): PokemonDetails.Genera? {
+        return details.genera.find { it.language.name == "en" }
+//        var x = 0
+//        while (true) {
+//            if (details.genera[x].language.name == "en") {
+//                return x
+//            } else {
+//                x += 1
+//            }
+//        }
     }
 
     // Method that returns a specific pokemon from the live data list of pokemon entities.
-    fun getPokemonEntity(id: Int): Pokemon {
-        return pokemonEntities.value!![id]
+    fun getPokemonEntity(id: Int): Pokemon? {
+        return pokemonEntities.value?.find { it.nationalNum == id }
+    }
+
+    fun getEvolutionEntity(id: Int): Pokemon? {
+        return evolutionList.value?.find { it.nationalNum == id }
+    }
+
+    fun getAlternateEntity(id: Int): AlternateForm? {
+        return alternateFormList.value?.find { it.id == id }
+    }
+
+    fun getGenus(id: Int): String? {
+        val previousForm: Pokemon? = evolutionList.value?.find { it.id == id }
+        return previousForm?.genus
     }
 
     // Method that returns an ability or null.
     private fun getAbility(stats: PokemonStats, slot: Int): String? {
-        var i = 0
-        while (true) {
-            when {
-                i > stats.abilities.size - 1 -> return null
-                stats.abilities[i].slot == slot -> return stats.abilities[i].ability.name
-                else -> i += 1
-            }
-//            if (i > stats.abilities.size - 1) {
-//                return null
-//            } else if (stats.abilities[i].slot == slot) {
-//                return stats.abilities[i].ability.name
-//            } else {
-//                i += 1
+        return stats.abilities.find { it.slot == slot }?.ability?.name
+//        var i = 0
+//        while (true) {
+//            when {
+//                i > stats.abilities.size - 1 -> return null
+//                stats.abilities[i].slot == slot -> return stats.abilities[i].ability.name
+//                else -> i += 1
 //            }
-//            try {
-//                if (stats.abilities[i].slot == slot) {
-//                    return stats.abilities[i].ability.name
-//                } else {
-//                    i += 1
-//                }
-//            } catch (e: IndexOutOfBoundsException) {
-//                return null
-//            }
-        }
+//        }
     }
 
     // Method that returns a type or null.
     private fun getType(stats: PokemonStats, slot: Int): String? {
-        var i = 0
-        while (true) {
-            when {
-                i > stats.types.size - 1 -> return null
-                stats.types[i].slot == slot -> return stats.types[i].type.name
-                else -> i += 1
-            }
-//            try {
-//                if (stats.types[i].slot == slot) {
-//                    return stats.types[i].type.name
-//                } else {
-//                    i += 1
-//                }
-//            } catch (e: IndexOutOfBoundsException) {
-//                return null
+        return stats.types.find { it.slot == slot }?.type?.name
+//        var i = 0
+//        while (true) {
+//            when {
+//                i > stats.types.size - 1 -> return null
+//                stats.types[i].slot == slot -> return stats.types[i].type.name
+//                else -> i += 1
 //            }
-        }
+//        }
     }
 
     // Method for returning a base stats of a pokemon.
     private fun getStat(stats: PokemonStats, name: String): Int {
-        var i = 0
-        while (true) {
-            if (stats.stats[i].stat.name == name) {
-                return stats.stats[i].baseStat
-            } else {
-                i += 1
-            }
-        }
+        val baseStat = stats.stats.find { it.stat.name == name }
+
+        return baseStat?.baseStat ?: 0
+//        var i = 0
+//        while (true) {
+//            if (stats.stats[i].stat.name == name) {
+//                return stats.stats[i].baseStat
+//            } else {
+//                i += 1
+//            }
+//        }
     }
 
     // Determine stat percent.
@@ -408,7 +599,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     }
 
     // Edit searchText in sorting data.
-    fun searchPokemon(searchString: String?) {
+    fun searchPokemon(searchString: String) {
         _sortingData.value = _sortingData.value?.copy(searchText = searchString)
     }
 
@@ -423,11 +614,69 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
     }
 
     // Changes order of the dex by stat.
-    fun setOrder(stat: String) {
+    fun setOrder(stat: SortByEnum) {
         if (stat != _sortingData.value?.sortBy) {
             _sortingData.value = _sortingData.value?.copy(sortBy = stat)
         }
     }
+
+    // Sets the evolution chain number for each pokemon in the database.
+    private fun parseUrl(url: String): Int {
+        val uri: Uri = Uri.parse(url)
+        return uri.lastPathSegment?.toInt() ?: 0
+    }
+
+    // Sets the evolution data for each pokemon in the database.
+    private fun getEvolutionData(evolvesTo: EvolvesTo) {
+        for (evolution in evolvesTo.evolvesTo) {
+            getEvolutionData(evolution)
+        }
+
+        val species = evolvesTo.species.name
+
+        val details = try {
+             evolvesTo.evolutionDetails[0]
+        } catch (e: IndexOutOfBoundsException) {
+            null
+        }
+
+        viewModelScope.launch {
+            val currentEntity = viewModelScope.async { pokemonDao.findEntity(species) }
+            val newEntity = currentEntity.await().copy(
+                evolutionTrigger = details?.trigger?.name,
+                gender = details?.gender,
+                heldItem = details?.heldItem?.name,
+                item = details?.item?.name,
+                knowMove = details?.knownMove?.name,
+                knownMoveType = details?.knownMoveType?.name,
+                location = details?.location?.name,
+                minAffection = details?.minAffection,
+                minBeauty = details?.minBeauty,
+                minHappiness = details?.minHappiness,
+                minLevel = details?.minLevel,
+                needsOverworldRain = details?.needsOverworldRain ?: false,
+                partySpecies = details?.partySpecies?.name,
+                partyType = details?.partyType?.name,
+                relativePhysicalStats = details?.relativePhysicalStats,
+                timeOfDay = details?.timeOfDay ?: "",
+                tradeSpecies = details?.tradeSpecies?.name,
+                turnUpsideDown = details?.turnUpsideDown ?: false
+            )
+            pokemonDao.updatePokemonDatabase(newEntity)
+            Log.i("evo", "${newEntity.pokemonName} evolution data added.")
+        }
+    }
+
+    // Retrieves the evolution chain for use in pokemon info fragment.
+    fun getEvolutionChain(chainNum: Int) {
+        _evolutionChainNum.value = chainNum
+    }
+
+    // Sets the species name for use in finding alternate forms in the database.
+    fun getAlternateForms(speciesName: String) {
+        _species.value = speciesName
+    }
+
 }
 
 class DexViewModelFactory(private val pokemonDao: PokemonDao): ViewModelProvider.Factory {

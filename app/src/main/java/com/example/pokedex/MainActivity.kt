@@ -25,22 +25,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    // TODO: Remove hardcoded strings.
-
-    // TODO: Fix the way the type images are selected.
-
     // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
-
-    // TODO: Add evolution chains.
-
-    // TODO: Add alternate forms of pokemon.
 
     // TODO: Add pokemon cries maybe?
 
     // TODO: Maybe add moves?
 
-    // TODO: Rework database download to only load on first startup.
+    // TODO: Rework database download timing.
 
     // TODO: Two pane layout for tablets.
+
+    // TODO: Add checks for bad data from API.
+
+    // TODO: Redo cool animation stuff.
 
 }

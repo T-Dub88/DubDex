@@ -29,6 +29,25 @@
         android:label="fragment_pokemon_info"
         tools:layout="@layout/fragment_pokemon_info" >
         <argument android:name="pokemonPlacement" />
+        <action
+            android:id="@+id/action_pokemonInfoFragment_self"
+            app:destination="@id/pokemonInfoFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/dexListFragment" />
+        <argument
+            android:name="evolutionNav"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_pokemonInfoFragment_to_alternateFormFragment"
+            app:destination="@id/alternateFormFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/dexListFragment" />
     </fragment>
 
     <dialog
@@ -39,5 +58,31 @@
             android:id="@+id/action_sortingOptionsDialog_to_dexListFragment"
             app:destination="@id/dexListFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/alternateFormFragment"
+        android:name="com.example.pokedex.ui.AlternateFormFragment"
+        android:label="fragment_alternate_form"
+        tools:layout="@layout/fragment_alternate_form" >
+        <action
+            android:id="@+id/action_alternateFormFragment_self"
+            app:destination="@id/alternateFormFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/dexListFragment" />
+        <action
+            android:id="@+id/action_alternateFormFragment_to_pokemonInfoFragment"
+            app:destination="@id/pokemonInfoFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/dexListFragment" />
+        <argument android:name="pokemonPlacement" />
+        <argument
+            android:name="evolutionNav"
+            app:argType="boolean" />
+    </fragment>
 
 </navigation>

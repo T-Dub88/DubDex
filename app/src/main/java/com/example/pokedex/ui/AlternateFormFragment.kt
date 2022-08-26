@@ -1,12 +1,12 @@
 package com.example.pokedex.ui
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -14,30 +14,38 @@ import com.example.pokedex.PokedexApplication
 import com.example.pokedex.R
 import com.example.pokedex.adapter.AlternateFormAdapter
 import com.example.pokedex.adapter.EvolutionAdapter
-import com.example.pokedex.databinding.FragmentPokemonInfoBinding
+import com.example.pokedex.databinding.FragmentAlternateFormBinding
+import com.example.pokedex.ui.PokemonInfoFragment.Companion.EVOLUTIONNAV
+import com.example.pokedex.ui.PokemonInfoFragment.Companion.POKEMONPLACEMENT
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
 import okhttp3.internal.format
 import kotlin.properties.Delegates
 
-class PokemonInfoFragment : Fragment() {
+class AlternateFormFragment : Fragment() {
 
-    private lateinit var _binding: FragmentPokemonInfoBinding
+    // Sets up binding for accessing views.
+    private lateinit var _binding: FragmentAlternateFormBinding
     private val binding get() = _binding
+
+    // Sets up access to the view model and doa via the view model factory.
     private val sharedViewModel: DexViewModel by activityViewModels {
         DexViewModelFactory(
             (activity?.application as PokedexApplication).database.pokemonDao()
         )
     }
 
+    // Companion object for arguments passed through navigation.
     companion object {
         const val POKEMONPLACEMENT = "pokemonPlacement"
         const val EVOLUTIONNAV = "evolutionNav"
     }
 
+    // Reference to the variable that will be initialized from the nav.
     private lateinit var pokemonPlacement: String
     private var evolutionNav by Delegates.notNull<Boolean>()
 
+    // Retrieves nav argument on creation.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -50,18 +58,11 @@ class PokemonInfoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        _binding = FragmentPokemonInfoBinding.inflate(inflater, container, false)
+        // Inflate the layout for this fragment with binding.
+        _binding = FragmentAlternateFormBinding.inflate(inflater, container, false)
 
-        val currentPokemon = if (evolutionNav) {
-            sharedViewModel.getEvolutionEntity(pokemonPlacement.toInt())!!
-        }
-        else {
-            sharedViewModel.getPokemonEntity(pokemonPlacement.toInt())!!
-        }
-
-        sharedViewModel.getEvolutionChain(currentPokemon.evolutionChain)
-        sharedViewModel.getAlternateForms(currentPokemon.species)
+        // Sets a reference to the current fragments pokemon.
+        val currentPokemon = sharedViewModel.getAlternateEntity(pokemonPlacement.toInt())!!
 
         // Removes evolution card if pokemon doesn't evolve.
         sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
@@ -74,49 +75,36 @@ class PokemonInfoFragment : Fragment() {
             }
         }
 
-        // Removes alternate card if pokemon has no alternate forms.
-        sharedViewModel.alternateFormList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                binding.alternateFormsCard.visibility = GONE
-            }
-
-            else {
-                binding.alternateFormsCard.visibility = VISIBLE
-            }
-        }
-
-        // Removes view if missing second ability.
+        // Hides ability views if abilities are missing.
         if (currentPokemon.ability2 == null) {
             binding.or.visibility = GONE
         }
 
-        // Removes view if missing hidden ability.
         if (currentPokemon.hiddenAbility == null) {
             binding.hiddenAbilityHeader.visibility = GONE
             binding.hiddenAbility.visibility = GONE
             binding.abilitiesDivider.visibility = INVISIBLE
         }
 
-        // Loads image of the current pokemon.
+        // Retrieves image of pokemon.
+        // If no image can be found, uses a pokeball.
         binding.pokemonImage.load(
-            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon.nationalNum}.png"
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon.id}.png"
         ) {
             placeholder(R.drawable.pokeball)
             crossfade(700)
             error(R.drawable.pokeball)
         }
 
-        // Header card bindings.
-        binding.pokemonName.text = currentPokemon.pokemonName
+        // Bindings for header info.
+        binding.pokemonName.text = currentPokemon.name
         binding.pokemonNumber.text = format("#%03d", currentPokemon.nationalNum)
+        binding.genus.text = sharedViewModel.getGenus(currentPokemon.nationalNum)
         binding.height.text =
             getString(R.string.height, currentPokemon.height.toString())
         binding.weight.text =
             getString(R.string.weight, currentPokemon.weight.toString())
-        binding.genus.text = currentPokemon.genus
-
-        // Description binding.
-        binding.descriptionContent.text = currentPokemon.description
+//        binding.genus.text = baseForm.genus
 
         // Abilities bindings.
         binding.ability1.text = currentPokemon.ability1
@@ -128,48 +116,30 @@ class PokemonInfoFragment : Fragment() {
             getString(R.string.hp_stat, currentPokemon.hpStat)
         binding.hpPercent.text =
             getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.hpStat, currentPokemon.totalStats))
-
         binding.attackStat.text =
             getString(R.string.attack_stat, currentPokemon.attackStat)
         binding.attackPercent.text =
             getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.attackStat, currentPokemon.totalStats))
-
         binding.defenseStat.text =
             getString(R.string.defense_stat, currentPokemon.defenseStat)
         binding.defensePercent.text =
             getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.defenseStat, currentPokemon.totalStats))
-
         binding.specialAttackStat.text =
             getString(R.string.special_attack_stat, currentPokemon.specialAttackStat)
         binding.specialAttackPercent.text =
             getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.specialAttackStat, currentPokemon.totalStats))
-
         binding.specialDefenseStat.text =
             getString(R.string.special_defense_stat, currentPokemon.specialDefenseStat)
         binding.specialDefensePercent.text =
             getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.specialDefenseStat, currentPokemon.totalStats))
-
         binding.speedStat.text =
             getString(R.string.speed_stat, currentPokemon.speedStat)
         binding.speedPercent.text =
-           getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.speedStat, currentPokemon.totalStats))
-
+            getString(R.string.stat_percent, sharedViewModel.getPercent(currentPokemon.speedStat, currentPokemon.totalStats))
         binding.totalStats.text =
             getString(R.string.total_stats, currentPokemon.totalStats)
 
-        // context?.packageName == "com.example.pokedex"
-//        binding.type1.setImageResource(
-//            currentPokemon.type1?.let {
-//                resources.getIdentifier(it, "drawable", context?.packageName)
-//            } ?: android.R.color.transparent
-//        )
-//
-//        binding.type2.setImageResource(
-//            currentPokemon.type2?.let {
-//                resources.getIdentifier(it, "drawable", context?.packageName)
-//            } ?: android.R.color.transparent
-//        )
-
+        // Retrieves drawable names for types and binds the image.
         fun ImageView.setDrawableName(type: String?) {
             setImageResource(
                 type?.let {
@@ -177,26 +147,28 @@ class PokemonInfoFragment : Fragment() {
                 } ?: android.R.color.transparent
             )
         }
-
         binding.type1.setDrawableName(currentPokemon.type1)
         binding.type2.setDrawableName(currentPokemon.type2)
 
+        // Returns outermost layout in the binding.
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Get references to the recyclerviews for evolutions and alts.
         val recyclerView = view.findViewById<RecyclerView>(R.id.evolution_recycler_view)
         val recyclerViewAlternate = view.findViewById<RecyclerView>(R.id.alternate_forms_recycler_view)
 
+        // Live data observers for recyclerviews.
         sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
-            recyclerView.adapter = EvolutionAdapter(it, true)
-
+            recyclerView.adapter = EvolutionAdapter(it, false)
         }
 
         sharedViewModel.alternateFormList.observe(viewLifecycleOwner) {
-            recyclerViewAlternate.adapter = AlternateFormAdapter(it, true)
+            recyclerViewAlternate.adapter = AlternateFormAdapter(it, false)
         }
     }
+
 }

@@ -1,30 +1,43 @@
 package com.example.pokedex.data
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface PokemonDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAlternate(pokemon: AlternateForm)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pokemon: Pokemon)
 
-//    @Query("SELECT * FROM national ORDER BY nationalNum ASC")
-//    fun getAllByNumsAscending(): LiveData<List<Pokemon>>
+    // Method for updating a row in the database.
+    @Update
+    suspend fun updatePokemonDatabase(pokemon: Pokemon)
+
+    // Query for generating the list of distinct evolution chain numbers.
+    @Query("SELECT DISTINCT evolutionChain FROM National")
+    suspend fun getChainNumberList(): List<Int>
+
+    // Query for generating the list of alternate forms for a pokemon.
+    @Query("SELECT * FROM AlternateForms WHERE species = :species")
+    fun getAlternateFormsList(species: String?): LiveData<List<AlternateForm>>
+
+    //Query for getting evolution chain list for a pokemon.
+    @Query("SELECT * FROM National WHERE evolutionChain = :chainNum ORDER BY isBaby DESC")
+    fun getChainList(chainNum: Int?): LiveData<List<Pokemon>>
+
+    // Query for finding a previous evolution form.
+    @Query("SELECT * FROM National WHERE instr(name, :name) > 0")
+    suspend fun findEntity(name: String): Pokemon
 
     @Query("DELETE FROM national")
     suspend fun deleteAll()
 
-//    @Query("SELECT * FROM national WHERE nationalNum = :nationalNum")
-//    suspend fun getPokemon(nationalNum: String): Pokemon
-
-//    @Query("SELECT * FROM National WHERE name = :search OR nationalNum = :search ")
-//    fun filterDexList(search: String): LiveData<List<Pokemon>>
-
-//    @Query("SELECT * FROM NATIONAL ORDER BY name ASC")
-//    fun getAllByNamesAscending(): LiveData<List<Pokemon>>
+    @Query("SELECT * FROM National")
+    fun getAll(): LiveData<List<Pokemon>>
 
     // Sorting queries for user inputs.
     @Query(

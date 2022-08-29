@@ -17,4 +17,11 @@ interface DatabaseDao {
     // Query for generating the list of distinct evolution chain numbers.
     @Query("SELECT DISTINCT evolutionChain FROM National")
     suspend fun getChainNumberList(): List<Int>
+
+    @Query("DELETE FROM national")
+    suspend fun deleteAll()
+
+    // Query for finding a previous evolution form.
+    @Query("SELECT * FROM National WHERE instr(name, :name) > 0")
+    suspend fun findEntity(name: String): Pokemon
 }

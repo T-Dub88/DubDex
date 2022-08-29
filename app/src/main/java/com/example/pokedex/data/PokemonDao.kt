@@ -3,7 +3,6 @@ package com.example.pokedex.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
-
 @Dao
 interface PokemonDao {
 
@@ -16,10 +15,6 @@ interface PokemonDao {
     // Method for updating a row in the database.
     @Update
     suspend fun updatePokemonDatabase(pokemon: Pokemon)
-
-    // Query for generating the list of distinct evolution chain numbers.
-    @Query("SELECT DISTINCT evolutionChain FROM National")
-    suspend fun getChainNumberList(): List<Int>
 
     // Query for generating the list of alternate forms for a pokemon.
     @Query("SELECT * FROM AlternateForms WHERE species = :species")

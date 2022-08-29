@@ -31,6 +31,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures() {
+        viewBinding true
+        dataBinding true
+    }
 }
 
 dependencies {
@@ -58,4 +63,9 @@ dependencies {
 
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.12.0'
+
+    // Nav
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
 }

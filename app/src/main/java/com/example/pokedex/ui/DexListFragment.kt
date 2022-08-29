@@ -114,19 +114,19 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.download_data -> {
-                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
-                sharedViewModel.startRetrieval()
-            }
+//            R.id.download_data -> {
+//                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
+//                sharedViewModel.startRetrieval()
+//            }
 
             R.id.sort -> {
                 findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
             }
 
-            R.id.evolution_chains -> {
-                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
-                sharedViewModel.initializeChainCount()
-            }
+//            R.id.evolution_chains -> {
+//                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
+//                sharedViewModel.initializeChainCount()
+//            }
 
 
         }

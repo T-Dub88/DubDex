@@ -28,6 +28,11 @@ class BuildDatabaseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
+        // Inflate the layout for this fragment
+        _binding = FragmentBuildDatabaseBinding.inflate(inflater, container, false)
+
         binding.downloadData.setOnClickListener {
             viewModel.startRetrieval()
         }
@@ -36,8 +41,6 @@ class BuildDatabaseFragment : Fragment() {
             viewModel.initializeChainCount()
         }
 
-        // Inflate the layout for this fragment
-        _binding = FragmentBuildDatabaseBinding.inflate(inflater, container, false)
         return binding.root
     }
 

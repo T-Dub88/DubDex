@@ -1,4 +1,4 @@
-package com.example.pokedex.data.retrieved
+package com.example.databasebuilder.data.retrieved
 
 import com.squareup.moshi.Json
 
@@ -7,14 +7,6 @@ data class EvolutionChain(
     val id: Int
 )
 
-//data class Chain(
-//    @Json(name = "evolution_details")
-//    val evolutionDetails: List<EvolutionDetails>,
-//
-//    @Json(name = "evolves_to")
-//    val evolvesTo: List<EvolvesTo>,
-//
-//    )
 data class EvolvesTo(
     @Json(name = "evolution_details")
     val evolutionDetails: List<EvolutionDetails>,

@@ -1,4 +1,4 @@
-package com.example.pokedex.data.retrieved
+package com.example.databasebuilder.data.retrieved
 
 import com.squareup.moshi.Json
 

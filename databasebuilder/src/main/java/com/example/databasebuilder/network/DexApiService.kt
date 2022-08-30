@@ -29,9 +29,6 @@ interface DexApiService {
     @GET("pokemon/{pokemonNumber}")
     suspend fun getPokemonStats(@Path("pokemonNumber") name: String): PokemonStats
 
-    @GET("evolution-chain")
-    suspend fun getChainCount(): EvolutionChainCount
-
     @GET("evolution-chain/{chainNumber}")
     suspend fun getChainData(@Path("chainNumber") chainNumber: Int): EvolutionChain
 }

@@ -22,6 +22,8 @@ import com.example.pokedex.viewmodel.DexViewModelFactory
 
 class DexListFragment : androidx.fragment.app.Fragment() {
 
+    // ToDo: Fix deprecated options menu stuff.
+
     private val sharedViewModel: DexViewModel by activityViewModels {
         DexViewModelFactory(
             (activity?.application as PokedexApplication).database.pokemonDao()

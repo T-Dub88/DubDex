@@ -1,12 +1,13 @@
 package com.example.databasebuilder.viewmodel
 
+import android.app.Application
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.example.databasebuilder.data.AlternateForm
-import com.example.databasebuilder.data.DatabaseDao
+import com.example.databasebuilder.data.DataRoomDatabase
 import com.example.databasebuilder.data.Pokemon
 import com.example.databasebuilder.data.retrieved.EvolvesTo
 import com.example.databasebuilder.data.retrieved.PokemonDetails
@@ -15,7 +16,14 @@ import com.example.databasebuilder.network.DexApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class DatabaseViewModel(private val databaseDao: DatabaseDao) : ViewModel() {
+class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val db = Room.databaseBuilder(
+        application.applicationContext,
+        DataRoomDatabase::class.java, "data_database"
+    ).build()
+
+    private val databaseDao = db.databaseDao()
 
     // Initiate Pokemon data retrieval.
     fun startRetrieval() {
@@ -466,14 +474,4 @@ class DatabaseViewModel(private val databaseDao: DatabaseDao) : ViewModel() {
         }
     }
 
-}
-
-class DatabaseViewModelFactory(private val databaseDao: DatabaseDao): ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DatabaseViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return DatabaseViewModel(databaseDao) as T
-        }
-        throw  IllegalAccessException("Unknown ViewModel class")
-    }
 }

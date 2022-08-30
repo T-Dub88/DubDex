@@ -1,25 +1,17 @@
 package com.example.databasebuilder.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.databasebuilder.DatabaseApplication
-import com.example.databasebuilder.R
 import com.example.databasebuilder.databinding.FragmentBuildDatabaseBinding
 import com.example.databasebuilder.viewmodel.DatabaseViewModel
-import com.example.databasebuilder.viewmodel.DatabaseViewModelFactory
-
 
 class BuildDatabaseFragment : Fragment() {
 
-    private val viewModel: DatabaseViewModel by activityViewModels {
-        DatabaseViewModelFactory(
-            (activity?.application as DatabaseApplication).database.databaseDao()
-        )
-    }
+    private val viewModel: DatabaseViewModel by activityViewModels()
 
     private lateinit var _binding: FragmentBuildDatabaseBinding
     private val binding get() = _binding

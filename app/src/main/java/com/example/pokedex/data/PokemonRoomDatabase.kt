@@ -21,6 +21,8 @@ abstract class PokemonRoomDatabase: RoomDatabase() {
                     PokemonRoomDatabase::class.java,
                     "pokemon_database"
                 )
+                    .createFromAsset("database/data_database.db")
+                    // Change version number here and in .db file to force room to update.
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

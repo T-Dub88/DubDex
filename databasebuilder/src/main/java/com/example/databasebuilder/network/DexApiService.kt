@@ -1,6 +1,6 @@
-package com.example.pokedex.network
+package com.example.databasebuilder.network
 
-import com.example.pokedex.data.retrieved.*
+import com.example.databasebuilder.data.retrieved.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -28,9 +28,6 @@ interface DexApiService {
 
     @GET("pokemon/{pokemonNumber}")
     suspend fun getPokemonStats(@Path("pokemonNumber") name: String): PokemonStats
-
-    @GET("evolution-chain")
-    suspend fun getChainCount(): EvolutionChainCount
 
     @GET("evolution-chain/{chainNumber}")
     suspend fun getChainData(@Path("chainNumber") chainNumber: Int): EvolutionChain

@@ -5,10 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+
+
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -45,12 +49,64 @@ class DexListFragment : androidx.fragment.app.Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentDexListBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+
+                    menuInflater.inflate(R.menu.menu, menu)
+
+                    val searchBar = menu.findItem(R.id.search)
+                    val searchView = searchBar.actionView as SearchView
+
+                    searchView.queryHint = getString(R.string.search_hint)
+
+                    if (sharedViewModel.sortingData.value?.temporarySearch != "") {
+                        searchBar.expandActionView()
+                        searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
+                        sharedViewModel.sortingData.value?.temporarySearch?.let {
+                            sharedViewModel.searchPokemon(it)
+                        }
+                        sharedViewModel.sortingData.value?.temporarySearch = ""
+                    }
+
+                    // ToDo: SearchView text is being cleared when back navigation occurs.
+                    //  This should not be happening. This appears to be the problem.
+                    searchView.setOnQueryTextListener(
+                        object : SearchView.OnQueryTextListener {
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                hideKeyboard()
+                                return true
+                            }
+
+                            override fun onQueryTextChange(newText: String): Boolean {
+                                sharedViewModel.searchPokemon(newText)
+                                return true
+                            }
+                        }
+                    )
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    when (menuItem.itemId) {
+
+                        R.id.sort -> {
+                            findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
+                        }
+
+                    }
+                    return true
+                }
+            }, viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
 
@@ -68,40 +124,40 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         findNavController().removeOnDestinationChangedListener(navListener)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-
-        val searchBar = menu.findItem(R.id.search)
-        val searchView = searchBar.actionView as SearchView
-
-        searchView.queryHint = getString(R.string.search_hint)
-
-        if (sharedViewModel.sortingData.value?.temporarySearch != "") {
-            searchBar.expandActionView()
-            searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
-            sharedViewModel.sortingData.value?.temporarySearch?.let {
-                sharedViewModel.searchPokemon(it)
-            }
-            sharedViewModel.sortingData.value?.temporarySearch = ""
-        }
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                hideKeyboard()
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-
-                sharedViewModel.searchPokemon(newText)
-
-                return false
-            }
-
-        })
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.menu, menu)
+//
+//        val searchBar = menu.findItem(R.id.search)
+//        val searchView = searchBar.actionView as SearchView
+//
+//        searchView.queryHint = getString(R.string.search_hint)
+//
+//        if (sharedViewModel.sortingData.value?.temporarySearch != "") {
+//            searchBar.expandActionView()
+//            searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
+//            sharedViewModel.sortingData.value?.temporarySearch?.let {
+//                sharedViewModel.searchPokemon(it)
+//            }
+//            sharedViewModel.sortingData.value?.temporarySearch = ""
+//        }
+//
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                hideKeyboard()
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String): Boolean {
+//
+//                sharedViewModel.searchPokemon(newText)
+//
+//                return false
+//            }
+//
+//        })
+//
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
 
 
     // Hide keyboard functions
@@ -114,26 +170,26 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-//            R.id.download_data -> {
-//                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
-//                sharedViewModel.startRetrieval()
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+////            R.id.download_data -> {
+////                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
+////                sharedViewModel.startRetrieval()
+////            }
+//
+//            R.id.sort -> {
+//                findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
 //            }
-
-            R.id.sort -> {
-                findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
-            }
-
-//            R.id.evolution_chains -> {
-//                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
-//                sharedViewModel.initializeChainCount()
-//            }
-
-
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
+//
+////            R.id.evolution_chains -> {
+////                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
+////                sharedViewModel.initializeChainCount()
+////            }
+//
+//
+//        }
+//
+//        return super.onContextItemSelected(item)
+//    }
 
 }

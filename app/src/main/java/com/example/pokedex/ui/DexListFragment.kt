@@ -3,7 +3,6 @@ package com.example.pokedex.ui
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
@@ -37,7 +36,6 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         if (sharedViewModel.sortingData.value?.searchText != "") {
            sharedViewModel.sortingData.value?.temporarySearch = sharedViewModel.sortingData.value?.searchText.toString()
         }
-        Log.i("search temp", "${sharedViewModel.sortingData.value?.temporarySearch}")
     }
 
     private lateinit var _binding: FragmentDexListBinding
@@ -47,17 +45,8 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentDexListBinding.inflate(inflater, container, false)
-
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        findNavController().removeOnDestinationChangedListener(navListener)
-        searchView.setOnQueryTextListener(null)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,23 +67,19 @@ class DexListFragment : androidx.fragment.app.Fragment() {
                         object : SearchView.OnQueryTextListener {
                             override fun onQueryTextSubmit(query: String?): Boolean {
                                 hideKeyboard()
-                                return false
+                                return true
                             }
 
                             override fun onQueryTextChange(newText: String): Boolean {
-
-                                Log.i("search string", newText)
                                 if (!searchView.isIconified) {
                                     sharedViewModel.searchPokemon(newText)
-                                    Log.i("search tried", "I tried it")
                                 }
 
                                 if (sharedViewModel.pokemonEntities.value?.size == 898) {
                                     sharedViewModel.sortingData.value?.temporarySearch = ""
                                 }
 
-                                Log.i("Search Text", "${sharedViewModel.sortingData.value?.searchText}")
-                                return false
+                                return true
                             }
                         }
                     )
@@ -103,8 +88,6 @@ class DexListFragment : androidx.fragment.app.Fragment() {
                     if (sharedViewModel.sortingData.value?.temporarySearch != "") {
                         searchBar.expandActionView()
                         searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
-//                        sharedViewModel.sortingData.value?.temporarySearch = ""
-
                     }
                 }
 
@@ -119,7 +102,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
             },
             viewLifecycleOwner,
-            Lifecycle.State.CREATED
+            Lifecycle.State.RESUMED
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.dex_recycler_view)
@@ -133,41 +116,11 @@ class DexListFragment : androidx.fragment.app.Fragment() {
 
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu, menu)
-//
-//        val searchBar = menu.findItem(R.id.search)
-//        val searchView = searchBar.actionView as SearchView
-//
-//        searchView.queryHint = getString(R.string.search_hint)
-//
-//        if (sharedViewModel.sortingData.value?.temporarySearch != "") {
-//            searchBar.expandActionView()
-//            searchView.setQuery(sharedViewModel.sortingData.value?.temporarySearch, false)
-//            sharedViewModel.sortingData.value?.temporarySearch?.let {
-//                sharedViewModel.searchPokemon(it)
-//            }
-//            sharedViewModel.sortingData.value?.temporarySearch = ""
-//        }
-//
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                hideKeyboard()
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//
-//                sharedViewModel.searchPokemon(newText)
-//
-//                return false
-//            }
-//
-//        })
-//
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        findNavController().removeOnDestinationChangedListener(navListener)
+        searchView.setOnQueryTextListener(null)
+    }
 
     // Hide keyboard functions
     private fun Fragment.hideKeyboard() {
@@ -178,27 +131,5 @@ class DexListFragment : androidx.fragment.app.Fragment() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-////            R.id.download_data -> {
-////                Toast.makeText(activity, R.string.downloading, Toast.LENGTH_LONG).show()
-////                sharedViewModel.startRetrieval()
-////            }
-//
-//            R.id.sort -> {
-//                findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
-//            }
-//
-////            R.id.evolution_chains -> {
-////                Toast.makeText(activity, getString(R.string.adding_evolutions), Toast.LENGTH_LONG).show()
-////                sharedViewModel.initializeChainCount()
-////            }
-//
-//
-//        }
-//
-//        return super.onContextItemSelected(item)
-//    }
 
 }

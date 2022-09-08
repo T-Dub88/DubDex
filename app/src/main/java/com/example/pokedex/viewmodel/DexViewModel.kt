@@ -1,5 +1,6 @@
 package com.example.pokedex.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.pokedex.data.AlternateForm
 import com.example.pokedex.data.Pokemon
@@ -151,7 +152,7 @@ class DexViewModel(private val pokemonDao: PokemonDao) : ViewModel() {
 
     // Edit searchText in sorting data.
     fun searchPokemon(searchString: String) {
-        _sortingData.value = _sortingData.value?.copy(searchText = searchString)
+        _sortingData.value = _sortingData.value?.copy(searchText = searchString.lowercase())
     }
 
     // Toggles ascending vs descending.

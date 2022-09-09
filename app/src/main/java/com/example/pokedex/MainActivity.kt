@@ -29,4 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Add checks for bad data from API.
 
+    // TODO: Add back button from info fragment.
+
 }

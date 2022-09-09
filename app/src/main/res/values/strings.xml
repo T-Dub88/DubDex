@@ -75,5 +75,7 @@
     <string name="upside_down">turn upside-down\n</string>
 
     <string name="alternate_forms">alternate forms:</string>
+    <string name="background_image">Background image</string>
+    <string name="type_image">type image</string>
 
 </resources>

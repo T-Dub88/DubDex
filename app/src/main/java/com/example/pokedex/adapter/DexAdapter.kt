@@ -1,6 +1,5 @@
 package com.example.pokedex.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.example.pokedex.ui.DexListFragmentDirections
 import okhttp3.internal.format
 
 
+// Adapter class for the cards in the main Pokedex.
 class DexAdapter(
     private val data: List<Pokemon>,
     private val sortingInformation: SortByEnum
@@ -40,54 +40,12 @@ class DexAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = data[position]
         val resources = holder.itemView.context.resources
+
+        // URL for Pokemon artwork
         val imageUrl =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.nationalNum}.png"
 
-        // Need a way to fetch types per item.
-//        when (item.type1) {
-//            "bug" -> holder.pokemonType1.setImageResource(R.drawable.bug)
-//            "dark" -> holder.pokemonType1.setImageResource(R.drawable.dark)
-//            "dragon" -> holder.pokemonType1.setImageResource(R.drawable.dragon)
-//            "electric" -> holder.pokemonType1.setImageResource(R.drawable.electric)
-//            "fairy" -> holder.pokemonType1.setImageResource(R.drawable.fairy)
-//            "fighting" -> holder.pokemonType1.setImageResource(R.drawable.fighting)
-//            "fire" -> holder.pokemonType1.setImageResource(R.drawable.fire)
-//            "flying" -> holder.pokemonType1.setImageResource(R.drawable.flying)
-//            "ghost" -> holder.pokemonType1.setImageResource(R.drawable.ghost)
-//            "grass" -> holder.pokemonType1.setImageResource(R.drawable.grass)
-//            "ground" -> holder.pokemonType1.setImageResource(R.drawable.ground)
-//            "ice" -> holder.pokemonType1.setImageResource(R.drawable.ice)
-//            "normal" -> holder.pokemonType1.setImageResource(R.drawable.normal)
-//            "poison" -> holder.pokemonType1.setImageResource(R.drawable.poison)
-//            "rock" -> holder.pokemonType1.setImageResource(R.drawable.rock)
-//            "steel" -> holder.pokemonType1.setImageResource(R.drawable.steel)
-//            "water" -> holder.pokemonType1.setImageResource(R.drawable.water)
-//            "psychic" -> holder.pokemonType1.setImageResource(R.drawable.psychic)
-//            null -> holder.pokemonType1.setImageResource(android.R.color.transparent)
-//        }
-//
-//        when (item.type2) {
-//            "bug" -> holder.pokemonType2.setImageResource(R.drawable.bug)
-//            "dark" -> holder.pokemonType2.setImageResource(R.drawable.dark)
-//            "dragon" -> holder.pokemonType2.setImageResource(R.drawable.dragon)
-//            "electric" -> holder.pokemonType2.setImageResource(R.drawable.electric)
-//            "fairy" -> holder.pokemonType2.setImageResource(R.drawable.fairy)
-//            "fighting" -> holder.pokemonType2.setImageResource(R.drawable.fighting)
-//            "fire" -> holder.pokemonType2.setImageResource(R.drawable.fire)
-//            "flying" -> holder.pokemonType2.setImageResource(R.drawable.flying)
-//            "ghost" -> holder.pokemonType2.setImageResource(R.drawable.ghost)
-//            "grass" -> holder.pokemonType2.setImageResource(R.drawable.grass)
-//            "ground" -> holder.pokemonType2.setImageResource(R.drawable.ground)
-//            "ice" -> holder.pokemonType2.setImageResource(R.drawable.ice)
-//            "normal" -> holder.pokemonType2.setImageResource(R.drawable.normal)
-//            "poison" -> holder.pokemonType2.setImageResource(R.drawable.poison)
-//            "rock" -> holder.pokemonType2.setImageResource(R.drawable.rock)
-//            "steel" -> holder.pokemonType2.setImageResource(R.drawable.steel)
-//            "water" -> holder.pokemonType2.setImageResource(R.drawable.water)
-//            "psychic" -> holder.pokemonType2.setImageResource(R.drawable.psychic)
-//            null -> holder.pokemonType2.setImageResource(android.R.color.transparent)
-//        }
-
+        // Sets image resource for types based off a type string from the database
         fun ImageView.setDrawableName(type: String?) {
             setImageResource(
                 type?.let {
@@ -99,7 +57,7 @@ class DexAdapter(
         holder.pokemonType1.setDrawableName(item.type1)
         holder.pokemonType2.setDrawableName(item.type2)
 
-        // Puts stat on card when sorted.
+        // Puts stat on card when sorted
         when (sortingInformation) {
             SortByEnum.HP_STAT -> holder.sortedStat.text =
                 resources.getString(R.string.hp_stat_sort, item.hpStat)
@@ -135,7 +93,6 @@ class DexAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            Log.i("clicked", "clicked")
             val action = DexListFragmentDirections
                 .actionDexListFragmentToPokemonInfoFragment(
                     pokemonPlacement = item.nationalNum.toString(),
@@ -143,7 +100,6 @@ class DexAdapter(
                 )
             holder.view.findNavController().navigate(action)
         }
-
     }
 
     override fun getItemCount(): Int = data.size

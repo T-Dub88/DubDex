@@ -1,5 +1,6 @@
 package com.example.pokedex.data
 
+// Data class work storing the sorting information for the main dex screen
 data class SortingData(
     val searchText: String,
     val ascending: Boolean,
@@ -19,4 +20,3 @@ data class SortingData(
     }
 
 }
-

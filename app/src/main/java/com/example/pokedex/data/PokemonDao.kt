@@ -6,35 +6,15 @@ import androidx.room.*
 @Dao
 interface PokemonDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAlternate(pokemon: AlternateForm)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(pokemon: Pokemon)
-
-    // Method for updating a row in the database.
-    @Update
-    suspend fun updatePokemonDatabase(pokemon: Pokemon)
-
     // Query for generating the list of alternate forms for a pokemon.
     @Query("SELECT * FROM AlternateForms WHERE species = :species")
     fun getAlternateFormsList(species: String?): LiveData<List<AlternateForm>>
 
-    //Query for getting evolution chain list for a pokemon.
+    // Query for getting evolution chain list for a pokemon.
     @Query("SELECT * FROM National WHERE evolutionChain = :chainNum ORDER BY isBaby DESC")
     fun getChainList(chainNum: Int?): LiveData<List<Pokemon>>
 
-    // Query for finding a previous evolution form.
-    @Query("SELECT * FROM National WHERE instr(name, :name) > 0")
-    suspend fun findEntity(name: String): Pokemon
-
-    @Query("DELETE FROM national")
-    suspend fun deleteAll()
-
-    @Query("SELECT * FROM National")
-    fun getAll(): LiveData<List<Pokemon>>
-
-    // Sorting queries for user inputs.
+    // Sorting queries for user inputs
     @Query(
         "SELECT * FROM National WHERE instr(name, :search) > 0 " +
                 "OR instr(nationalNum, :search) > 0 ORDER BY nationalNum ASC"

@@ -157,18 +157,6 @@ class PokemonInfoFragment : Fragment() {
         binding.totalStats.text =
             getString(R.string.total_stats, currentPokemon.totalStats)
 
-        // context?.packageName == "com.example.pokedex"
-//        binding.type1.setImageResource(
-//            currentPokemon.type1?.let {
-//                resources.getIdentifier(it, "drawable", context?.packageName)
-//            } ?: android.R.color.transparent
-//        )
-//
-//        binding.type2.setImageResource(
-//            currentPokemon.type2?.let {
-//                resources.getIdentifier(it, "drawable", context?.packageName)
-//            } ?: android.R.color.transparent
-//        )
 
         fun ImageView.setDrawableName(type: String?) {
             setImageResource(

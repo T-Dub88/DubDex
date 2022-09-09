@@ -1,6 +1,5 @@
 package com.example.pokedex.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.pokedex.data.AlternateForm
 import com.example.pokedex.data.Pokemon

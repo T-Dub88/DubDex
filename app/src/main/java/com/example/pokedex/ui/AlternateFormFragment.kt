@@ -1,12 +1,12 @@
 package com.example.pokedex.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -15,8 +15,6 @@ import com.example.pokedex.R
 import com.example.pokedex.adapter.AlternateFormAdapter
 import com.example.pokedex.adapter.EvolutionAdapter
 import com.example.pokedex.databinding.FragmentAlternateFormBinding
-import com.example.pokedex.ui.PokemonInfoFragment.Companion.EVOLUTIONNAV
-import com.example.pokedex.ui.PokemonInfoFragment.Companion.POKEMONPLACEMENT
 import com.example.pokedex.viewmodel.DexViewModel
 import com.example.pokedex.viewmodel.DexViewModelFactory
 import okhttp3.internal.format
@@ -24,18 +22,18 @@ import kotlin.properties.Delegates
 
 class AlternateFormFragment : Fragment() {
 
-    // Sets up binding for accessing views.
+    // Sets up binding for accessing views
     private lateinit var _binding: FragmentAlternateFormBinding
     private val binding get() = _binding
 
-    // Sets up access to the view model and doa via the view model factory.
+    // Sets up access to the view model and doa via the view model factory
     private val sharedViewModel: DexViewModel by activityViewModels {
         DexViewModelFactory(
             (activity?.application as PokedexApplication).database.pokemonDao()
         )
     }
 
-    // Companion object for arguments passed through navigation.
+    // Companion object for arguments passed through navigation
     companion object {
         const val POKEMONPLACEMENT = "pokemonPlacement"
         const val EVOLUTIONNAV = "evolutionNav"
@@ -45,7 +43,7 @@ class AlternateFormFragment : Fragment() {
     private lateinit var pokemonPlacement: String
     private var evolutionNav by Delegates.notNull<Boolean>()
 
-    // Retrieves nav argument on creation.
+    // Retrieves nav argument on creation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -104,7 +102,6 @@ class AlternateFormFragment : Fragment() {
             getString(R.string.height, currentPokemon.height.toString())
         binding.weight.text =
             getString(R.string.weight, currentPokemon.weight.toString())
-//        binding.genus.text = baseForm.genus
 
         // Abilities bindings.
         binding.ability1.text = currentPokemon.ability1
@@ -150,7 +147,6 @@ class AlternateFormFragment : Fragment() {
         binding.type1.setDrawableName(currentPokemon.type1)
         binding.type2.setDrawableName(currentPokemon.type2)
 
-        // Returns outermost layout in the binding.
         return binding.root
     }
 
@@ -170,5 +166,4 @@ class AlternateFormFragment : Fragment() {
             recyclerViewAlternate.adapter = AlternateFormAdapter(it, false)
         }
     }
-
 }

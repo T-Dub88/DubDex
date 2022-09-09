@@ -14,6 +14,7 @@ import com.example.pokedex.ui.AlternateFormFragmentDirections
 import com.example.pokedex.ui.PokemonInfoFragmentDirections
 import okhttp3.internal.format
 
+// Adapter class for evolution cards in a Pokemon's fragment
 class EvolutionAdapter(
     private val data: List<Pokemon>,
     private val infoFragment: Boolean
@@ -41,12 +42,15 @@ class EvolutionAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = data[position]
         val resources = holder.itemView.context.resources
+
+        // Pokemon official artwork image URL
         val imageUrl =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.nationalNum}.png"
 
-        // Sets the string for all the possible evolution details.
+        // Sets the string for all the possible evolution details
         var evolutionDetails = resources.getString(R.string.empty)
-        // Checks each detail and adds to the string.
+
+        // Checks each detail of evolution and adds to the string
         if (item.gender != null) {
             evolutionDetails += when (item.gender) {
                 1 -> resources.getString(R.string.gender_female)
@@ -125,6 +129,7 @@ class EvolutionAdapter(
 
         evolutionDetails = evolutionDetails.trim()
 
+        // Set type images using type string from database
         fun ImageView.setDrawableName(type: String?) {
             setImageResource(
                 type?.let {
@@ -154,6 +159,7 @@ class EvolutionAdapter(
             error(R.drawable.pokeball)
         }
 
+        // Uses nav action based off where navigating from
         holder.itemView.setOnClickListener {
             val action = when (infoFragment) {
                 true -> PokemonInfoFragmentDirections
@@ -167,13 +173,10 @@ class EvolutionAdapter(
                         evolutionNav = true
                     )
             }
-
             holder.view.findNavController().navigate(action)
         }
-
     }
 
     override fun getItemCount(): Int = data.size
-
 
 }

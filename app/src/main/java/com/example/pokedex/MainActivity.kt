@@ -25,16 +25,10 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
 
-    // TODO: Add pokemon cries maybe?
-
     // TODO: Maybe add moves?
-
-    // TODO: Rework database download timing.
-
-    // TODO: Two pane layout for tablets.
 
     // TODO: Add checks for bad data from API.
 
-    // TODO: Redo cool animation stuff.
+    // TODO: Add back button from info fragment.
 
 }

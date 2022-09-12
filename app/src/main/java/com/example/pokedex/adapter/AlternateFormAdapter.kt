@@ -13,10 +13,11 @@ import com.example.pokedex.data.AlternateForm
 import com.example.pokedex.ui.AlternateFormFragmentDirections
 import com.example.pokedex.ui.PokemonInfoFragmentDirections
 
+
+// Adapter class for alternate for become listed at the bottom of a Pokemon's page.
 class AlternateFormAdapter(
     private val data: List<AlternateForm>,
     private val infoFragment: Boolean
-
 ) : RecyclerView.Adapter<AlternateFormAdapter.ItemViewHolder> () {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -37,10 +38,13 @@ class AlternateFormAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = data[position]
-//        val recyclerView = holder.itemView.context.resources
+
+        // URL for the official artwork of a pokemon
         val imageUrl =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png"
 
+        // Takes in a string and sets an image resource based off the string
+        // If no matching resource exists, the resource is set to transparent.
         fun ImageView.setDrawableName(type: String?) {
             setImageResource(
                 type?.let {
@@ -58,6 +62,8 @@ class AlternateFormAdapter(
         holder.type1.setDrawableName(item.type1)
         holder.type2.setDrawableName(item.type2)
 
+        // Click listener for the card
+        // Uses a different Nav action based off the type of fragment navigating from
         holder.itemView.setOnClickListener {
             val action = when (infoFragment) {
                 true -> PokemonInfoFragmentDirections

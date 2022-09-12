@@ -24,7 +24,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/pokemon_number"/>
+                app:layout_constraintBottom_toTopOf="@id/pokemon_number"
+                android:contentDescription="@string/pokemon_image" />
 
             <TextView
                 android:id="@+id/pokemon_number"
@@ -57,7 +58,8 @@
                 app:layout_constraintTop_toBottomOf="@id/pokemon_number"
                 app:layout_constraintEnd_toStartOf="@id/type_2"
                 app:layout_constraintBottom_toTopOf="@id/evolves_from"
-                android:layout_margin="4dp" />
+                android:layout_margin="4dp"
+                android:contentDescription="@string/type_image" />
 
             <ImageView
                 android:id="@+id/type_2"
@@ -67,7 +69,8 @@
                 app:layout_constraintStart_toEndOf="@id/type_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/evolves_from"
-                android:layout_margin="4dp" />
+                android:layout_margin="4dp"
+                android:contentDescription="@string/type_image" />
 
             <TextView
                 android:id="@+id/evolves_from"

@@ -49,9 +49,6 @@ class SortingOptionsDialog : BottomSheetDialogFragment() {
             else -> binding.orderChoices.check(R.id.speed)
         }
 
-//        val switch = binding.ascendingDescending
-//        switch.isChecked = sharedViewModel.
-
         binding.ascendingDescending.isChecked = sharedViewModel.sortingData.value?.ascending ?: true
 
         binding.applySorting.setOnClickListener {

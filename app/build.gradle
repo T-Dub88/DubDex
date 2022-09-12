@@ -67,12 +67,6 @@ dependencies {
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
     debugImplementation "androidx.fragment:fragment-testing:1.5.2"
 
-    // Retrofit with Moshi Converter
-    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
-
-    // Moshi
-    implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
-
     //Coil
     implementation "io.coil-kt:coil:2.0.0-rc02"
 

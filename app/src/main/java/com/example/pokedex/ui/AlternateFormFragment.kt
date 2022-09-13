@@ -177,5 +177,5 @@ class AlternateFormFragment : Fragment() {
         super.onPause()
         (activity as MainActivity).hideUpButton()
     }
-    
+
 }

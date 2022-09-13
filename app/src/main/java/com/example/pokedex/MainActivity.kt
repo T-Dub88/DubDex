@@ -1,6 +1,7 @@
 package com.example.pokedex
 
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -23,12 +24,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
+    fun showUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
 
-    // TODO: Maybe add moves?
-
-    // TODO: Add checks for bad data from API.
-
-    // TODO: Add back button from info fragment.
+    fun hideUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
 
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.pokedex.MainActivity
 import com.example.pokedex.PokedexApplication
 import com.example.pokedex.R
 import com.example.pokedex.adapter.AlternateFormAdapter
@@ -187,4 +188,15 @@ class PokemonInfoFragment : Fragment() {
             recyclerViewAlternate.adapter = AlternateFormAdapter(it, true)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showUpButton()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideUpButton()
+    }
+
 }

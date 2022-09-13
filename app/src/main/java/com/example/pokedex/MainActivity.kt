@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.pokedex.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,14 +23,25 @@ class MainActivity : AppCompatActivity() {
 
         navController = navHostFragment.navController
 
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
     }
 
-    // TODO: Handle missing abilities/hidden abilities to be more aesthetically pleasing.
+    override fun onSupportNavigateUp(): Boolean {
 
-    // TODO: Maybe add moves?
+        return navController.navigateUp() || super.onSupportNavigateUp()
 
-    // TODO: Add checks for bad data from API.
+    }
 
-    // TODO: Add back button from info fragment.
+    fun showUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    fun hideUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
 
 }

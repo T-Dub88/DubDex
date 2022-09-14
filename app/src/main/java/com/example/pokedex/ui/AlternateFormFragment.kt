@@ -100,7 +100,7 @@ class AlternateFormFragment : Fragment() {
         binding.pokemonImage.setOnClickListener {
             val action = AlternateFormFragmentDirections
                 .actionAlternateFormFragmentToPokemonImageDialog(
-                    nationalNum = currentPokemon.nationalNum.toString()
+                    nationalNum = currentPokemon.id.toString()
                 )
             findNavController().navigate(action)
         }

@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/dexListFragment"
         android:name="com.example.pokedex.ui.DexListFragment"
-        android:label="fragment_dex_list"
+        android:label="@string/dex_header"
         tools:layout="@layout/fragment_dex_list" >
         <action
             android:id="@+id/action_dexListFragment_to_pokemonInfoFragment"
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/pokemonInfoFragment"
         android:name="com.example.pokedex.ui.PokemonInfoFragment"
-        android:label="fragment_pokemon_info"
+        android:label="@string/pokemon_info"
         tools:layout="@layout/fragment_pokemon_info" >
         <argument android:name="pokemonPlacement" />
         <action
@@ -61,7 +61,7 @@
     <fragment
         android:id="@+id/alternateFormFragment"
         android:name="com.example.pokedex.ui.AlternateFormFragment"
-        android:label="fragment_alternate_form"
+        android:label="@string/pokemon_info"
         tools:layout="@layout/fragment_alternate_form" >
         <action
             android:id="@+id/action_alternateFormFragment_self"

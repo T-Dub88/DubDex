@@ -78,4 +78,8 @@
     <string name="background_image">Background image</string>
     <string name="type_image">type image</string>
 
+<!--    Fragment Headers-->
+    <string name="dex_header">NATIONAL DEX</string>
+    <string name="pokemon_info">POKEMON INFORMATION</string>
+
 </resources>

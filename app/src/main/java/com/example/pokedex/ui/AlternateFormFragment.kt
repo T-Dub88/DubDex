@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.MainActivity
@@ -93,6 +94,15 @@ class AlternateFormFragment : Fragment() {
             placeholder(R.drawable.pokeball)
             crossfade(700)
             error(R.drawable.pokeball)
+        }
+
+        // Listener for image click. Passes number to dialog to open appropriate pokemon image
+        binding.pokemonImage.setOnClickListener {
+            val action = AlternateFormFragmentDirections
+                .actionAlternateFormFragmentToPokemonImageDialog(
+                    nationalNum = currentPokemon.id.toString()
+                )
+            findNavController().navigate(action)
         }
 
         // Bindings for header info.

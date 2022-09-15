@@ -48,6 +48,9 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"
             app:popUpTo="@id/dexListFragment" />
+        <action
+            android:id="@+id/action_pokemonInfoFragment_to_pokemonImageDialog"
+            app:destination="@id/pokemonImageDialog" />
     </fragment>
 
     <dialog
@@ -83,6 +86,17 @@
         <argument
             android:name="evolutionNav"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_alternateFormFragment_to_pokemonImageDialog"
+            app:destination="@id/pokemonImageDialog" />
     </fragment>
+    <dialog
+        android:id="@+id/pokemonImageDialog"
+        android:name="com.example.pokedex.ui.PokemonImageDialog"
+        android:label="fragment_pokemon_image_dialog"
+        tools:layout="@layout/fragment_pokemon_image_dialog" >
+        <argument
+            android:name="nationalNum" />
+    </dialog>
 
 </navigation>

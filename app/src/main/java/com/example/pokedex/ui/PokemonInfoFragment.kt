@@ -1,6 +1,7 @@
 package com.example.pokedex.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.pokedex.MainActivity
@@ -105,6 +107,16 @@ class PokemonInfoFragment : Fragment() {
             placeholder(R.drawable.pokeball)
             crossfade(700)
             error(R.drawable.pokeball)
+        }
+
+        // Listener for image click. Passes number to dialog to open appropriate pokemon image
+        binding.pokemonImage.setOnClickListener {
+            Log.i("number", currentPokemon.nationalNum.toString())
+            val action = PokemonInfoFragmentDirections
+                .actionPokemonInfoFragmentToPokemonImageDialog(
+                    nationalNum = currentPokemon.nationalNum.toString()
+                )
+            findNavController().navigate(action)
         }
 
         // Header card bindings.

@@ -28,6 +28,8 @@
     <string name="adding_evolutions">Adding Evolutions…</string>
     <string name="empty" />
     <string name="about">ABOUT</string>
+    <string name="copyright_statement">DubDex is an unofficial, fan made app and is not affiliated, endorsed, or supported by Nintendo, Game Freak, or The Pokemon Company. Some of the images used in this app are copyrighted and are supported under fair use. Pokemon and Pokemon character names are trademarks of Nintendo. No copyright infringement intended</string>
+
 
     <!--    Stats string resources-->
     <string name="hp_stat_sort">hp:\n%d</string>
@@ -82,8 +84,7 @@
     <!--    Fragment Headers-->
     <string name="dex_header">NATIONAL DEX</string>
     <string name="pokemon_info">POKÉMON INFORMATION</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="copyright_statement">DubDex is an unofficial, fan made app and is not affiliated, endorsed, or supported by Nintendo, Game Freak, or The Pokemon Company. Some of the images used in this app are copyrighted and are supported under fair use. Pokemon and Pokemon character names are trademarks of Nintendo. No copyright infringement intended</string>
+    <string name="app_info">APP INFORMATION</string>
+
 
 </resources>

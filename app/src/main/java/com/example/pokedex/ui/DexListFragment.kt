@@ -80,7 +80,7 @@ class DexListFragment : androidx.fragment.app.Fragment() {
                         }
 
                         R.id.about -> {
-                            // ToDo: add navigation action for info fragment.
+                            findNavController().navigate(R.id.action_dexListFragment_to_informationFragment)
                         }
                     }
                     return true

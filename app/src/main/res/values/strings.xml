@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DubDex</string>
     <string name="description">description:</string>
-    <string name="pokemon_image">pokemon image</string>
+    <string name="pokemon_image">pokémon image</string>
     <string name="abilities">abilities:</string>
     <string name="or">or</string>
     <string name="hidden">hidden:</string>
@@ -50,7 +50,7 @@
     <!--    Evolution Data string resources-->
     <!--    try type f for int-->
     <string name="evolves_from">evolves from:\n%s</string>
-    <string name="baby">baby pokemon\n</string>
+    <string name="baby">baby pokémon\n</string>
     <string name="no_evolution">no prior evolution</string>
     <string name="gender_female">gender:\nfemale\n</string>
     <string name="gender_male">gender:\nmale\n</string>
@@ -80,6 +80,6 @@
 
     <!--    Fragment Headers-->
     <string name="dex_header">NATIONAL DEX</string>
-    <string name="pokemon_info">POKEMON INFORMATION</string>
+    <string name="pokemon_info">POKÉMON INFORMATION</string>
 
 </resources>

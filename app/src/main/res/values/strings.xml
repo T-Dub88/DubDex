@@ -7,8 +7,8 @@
     <string name="hidden">hidden:</string>
     <string name="base_stats">base stats:</string>
     <string name="download_data">Download Data</string>
-    <string name="search">search</string>
-    <string name="sort_by">sort by…</string>
+    <string name="search">SEARCH</string>
+    <string name="sort_by">SORT BY…</string>
     <string name="order">ascending/descending</string>
     <string name="national_number">national number</string>
     <string name="alphabetical">alphabetical</string>
@@ -27,6 +27,7 @@
     <string name="downloading">Downloading…</string>
     <string name="adding_evolutions">Adding Evolutions…</string>
     <string name="empty" />
+    <string name="about">ABOUT</string>
 
     <!--    Stats string resources-->
     <string name="hp_stat_sort">hp:\n%d</string>

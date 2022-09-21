@@ -10,7 +10,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.pokedex"
+        applicationId "com.dubproductions.pokedex"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -39,7 +39,7 @@ android {
         viewBinding true
         dataBinding true
     }
-    namespace 'com.example.pokedex'
+    namespace 'com.dubproductions.pokedex'
 }
 
 dependencies {

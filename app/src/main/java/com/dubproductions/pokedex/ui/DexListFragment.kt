@@ -20,7 +20,7 @@ import com.dubproductions.pokedex.databinding.FragmentDexListBinding
 import com.dubproductions.pokedex.viewmodel.DexViewModel
 import com.dubproductions.pokedex.viewmodel.DexViewModelFactory
 
-class DexListFragment : androidx.fragment.app.Fragment() {
+class DexListFragment : Fragment() {
 
     private val sharedViewModel: DexViewModel by activityViewModels {
         DexViewModelFactory(

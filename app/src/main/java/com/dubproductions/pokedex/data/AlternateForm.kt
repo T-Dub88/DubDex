@@ -1,6 +1,5 @@
 package com.dubproductions.pokedex.data
 
-import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -17,23 +16,18 @@ data class AlternateForm(
 
     val name: String,
 
-    @Nullable
     val type1: String?,
 
-    @Nullable
     val type2: String?,
 
     val height: Double,
 
     val weight: Double,
 
-    @Nullable
     val ability1: String?,
 
-    @Nullable
     val ability2: String?,
 
-    @Nullable
     val hiddenAbility: String?,
 
     val hpStat: Int,

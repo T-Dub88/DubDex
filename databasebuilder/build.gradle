@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.databasebuilder"
+        applicationId "com.dubproductions.databasebuilder"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -36,7 +36,7 @@ android {
         viewBinding true
         dataBinding true
     }
-    namespace 'com.example.databasebuilder'
+    namespace 'com.dubproductions.databasebuilder'
 }
 
 dependencies {

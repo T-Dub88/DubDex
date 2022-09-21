@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/buildDatabaseFragment"
-        android:name="com.example.databasebuilder.ui.BuildDatabaseFragment"
+        android:name="com.dubproductions.databasebuilder.ui.BuildDatabaseFragment"
         android:label="fragment_build_database"
         tools:layout="@layout/fragment_build_database" />
 </navigation>

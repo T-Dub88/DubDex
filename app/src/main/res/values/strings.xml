@@ -28,7 +28,25 @@
     <string name="adding_evolutions">Adding Evolutions…</string>
     <string name="empty" />
     <string name="about">ABOUT</string>
-    <string name="copyright_statement">DubDex is an unofficial, fan made app and is not affiliated, endorsed, or supported by Nintendo, Game Freak, or The Pokemon Company. Some of the images used in this app are copyrighted and are supported under fair use. Pokemon and Pokemon character names are trademarks of Nintendo. No copyright infringement intended</string>
+    <string name="copyright_statement">DubDex is an unofficial, fan made
+        app and is not affiliated, endorsed, or supported by Nintendo,
+        Game Freak, or The Pokémon Company. Some of the images used in
+        this app are copyrighted and are supported under fair use.
+        Pokémon and Pokémon character names are trademarks of Nintendo.
+        No copyright infringement intended.\n\nAll Pokémon information used in this application was
+        created using pokeapi.co</string>
+    <string name="legal">legal</string>
+    <string name="version_1.0">1.0</string>
+    <string name="version_information">version information</string>
+    <string name="features">features</string>
+    <string name="version_1.0_information">-scrollable national dex of all 898 pokémon species.
+        \n\n-internet connection required for image loading.\n\n-instantly search for a pokémon by
+        name or number.\n\n-sort the dex in ascending or descending order using various pokémon
+        statistics.\n\n-click on a pokémon\'s card to view a more in depth page about its details,
+        statistics, evolutions, and alternate forms.\n\n-on a pokémon\'s page, click the pokémon\'s
+        image to view a larger version of the official art.\n\n-click on any pokémon\'s evolution or
+        alternate form tonavigate to that form\'s information page.\n\n-please let the dev know
+        about any bugs you encounter by posting on the play store!</string>
 
 
     <!--    Stats string resources-->
@@ -85,6 +103,5 @@
     <string name="dex_header">NATIONAL DEX</string>
     <string name="pokemon_info">POKÉMON INFORMATION</string>
     <string name="app_info">APP INFORMATION</string>
-
 
 </resources>

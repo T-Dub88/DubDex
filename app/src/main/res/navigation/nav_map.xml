@@ -21,6 +21,13 @@
         <action
             android:id="@+id/action_dexListFragment_to_sortingOptionsDialog"
             app:destination="@id/sortingOptionsDialog" />
+        <action
+            android:id="@+id/action_dexListFragment_to_informationFragment"
+            app:destination="@id/informationFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -98,5 +105,10 @@
         <argument
             android:name="nationalNum" />
     </dialog>
+    <fragment
+        android:id="@+id/informationFragment"
+        android:name="com.example.pokedex.ui.InformationFragment"
+        android:label="@string/app_info"
+        tools:layout="@layout/fragment_information" />
 
 </navigation>

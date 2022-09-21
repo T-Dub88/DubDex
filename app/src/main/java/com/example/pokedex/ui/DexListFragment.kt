@@ -78,6 +78,10 @@ class DexListFragment : androidx.fragment.app.Fragment() {
                         R.id.sort -> {
                             findNavController().navigate(R.id.action_dexListFragment_to_sortingOptionsDialog)
                         }
+
+                        R.id.about -> {
+                            findNavController().navigate(R.id.action_dexListFragment_to_informationFragment)
+                        }
                     }
                     return true
                 }

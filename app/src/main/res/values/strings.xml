@@ -36,10 +36,10 @@
         No copyright infringement intended.\n\nAll Pokémon information used in this application was
         created using pokeapi.co</string>
     <string name="legal">legal</string>
-    <string name="version_1.0">1.0</string>
+    <string name="version_1.0">1.02</string>
     <string name="version_information">version information</string>
     <string name="features">features</string>
-    <string name="version_1.0_information">-scrollable national dex of all 898 pokémon species.
+    <string name="version_1.0_information">-scrollable national dex of all 905 pokémon species.
         \n\n-internet connection required for image loading.\n\n-instantly search for a pokémon by
         name or number.\n\n-sort the dex in ascending or descending order using various pokémon
         statistics.\n\n-click on a pokémon\'s card to view a more in depth page about its details,

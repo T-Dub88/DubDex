@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Pokemon::class, AlternateForm::class], version = 2, exportSchema = false)
+@Database(entities = [Pokemon::class, AlternateForm::class], version = 3, exportSchema = false)
 abstract class PokemonRoomDatabase: RoomDatabase() {
 
     abstract fun pokemonDao(): PokemonDao

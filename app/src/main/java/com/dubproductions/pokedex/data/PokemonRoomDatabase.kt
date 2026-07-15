@@ -23,7 +23,7 @@ abstract class PokemonRoomDatabase: RoomDatabase() {
                 )
                     .createFromAsset("database/data_database.db")
                     // Change version number here and in .db file to force room to update.
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 return instance

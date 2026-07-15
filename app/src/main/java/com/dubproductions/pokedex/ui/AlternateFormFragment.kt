@@ -164,11 +164,11 @@ class AlternateFormFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get references to the recyclerviews for evolutions and alts.
+        // Get references to the recycler views for evolutions and alts.
         val recyclerView = view.findViewById<RecyclerView>(R.id.evolution_recycler_view)
         val recyclerViewAlternate = view.findViewById<RecyclerView>(R.id.alternate_forms_recycler_view)
 
-        // Live data observers for recyclerviews.
+        // Live data observers for recycler views.
         sharedViewModel.evolutionList.observe(viewLifecycleOwner) {
             recyclerView.adapter = EvolutionAdapter(it, false)
         }
